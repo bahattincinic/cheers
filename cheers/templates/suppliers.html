@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-md-3" style="float: right;">
        <!-- Button trigger modal -->
-       <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createSupplier"
+       <button type="button" class="btn btn-primary btn-lg" id="create"
             style="margin-right: 12px; float: right">
          + Yeni Tedarikçi Ekle
        </button> 
@@ -30,8 +30,10 @@
                   </button>
                   <ul class="dropdown-menu">
                     <li><a href="#" data-toggle="modal" data-target="#updateSupplier">Tedarikçi Bilgilerini Güncelle</a></li>
-                    <li><a href="#">Kriter Güncelleme</a></li>
-                    <li><a href="#">Sil</a></li>
+                    <li><a href="#" class="updateItem" data-id="{{ supplier.id }}" data-name="{{ supplier.name }}">
+                      Kriter Güncelleme
+                    </a></li>
+                    <li><a href="{% url 'supplier-delete' supplier.id %}">Sil</a></li>
                   </ul>
                 </div>
               </td>
@@ -48,49 +50,82 @@
 
 
   <!-- Modal -->
-  <div class="modal fade" id="createSupplier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
+        {% csrf_token %}
+        <input type="hidden" name="objectId" value="" />
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Yeni Tedarikçi Ekle</h4>
+          <h4 class="modal-title" id="modalLabel">Yeni Tedarikçi Ekle</h4>
         </div>
         <div class="modal-body">
           <form>
             <div class="form-group">
               <label for="exampleInputEmail1">Tedarikci Adı</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">
+              <input type="name" class="form-control" id="name" placeholder="">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
-          <button type="button" class="btn btn-primary">Kaydet</button>
+          <button type="button" class="btn btn-primary" id="modalButton">Kaydet</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="updateSupplier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Tedarikçi Güncelle</h4>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Tedarikci Adı</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Marmara Forum">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
-          <button type="button" class="btn btn-primary">Kaydet</button>
-        </div>
-      </div>
-    </div>
-  </div>
 {% endblock content %}
+
+{% block footer %}
+ <script type="text/javascript">
+  $(function() {
+    $('#create').click(function() {
+      $('#modalLabel').text('Yeni Tedarikçi Ekle');
+      $('#name').val('');
+      $('#modal').modal('show');
+    });
+
+    $('.updateItem').click(function() {
+      $('#modalLabel').text('Tedarikçi Güncelle');
+      $('#name').val($(this).data('name'));
+      $('input[name=objectId]').val($(this).data('id'));
+      $('#modal').modal('show');
+    });
+
+    $('#modalButton').click(function() {
+      const csrfmiddlewaretoken = $('input[name=csrfmiddlewaretoken]').val();
+
+      if (_.isEmpty($('#name').val())) {
+        toastr.error("Tedarikçi Adı Zorunludur", "Form Hatası")
+        return;
+      }
+
+      updateUrl = "{% url 'supplier-update' 0 %}";
+      url = "{% url 'supplier-create' %}";
+
+      if (!_.isEmpty($('input[name=objectId]').val())) {
+        url = updateUrl.replace(0, $('input[name=objectId]').val());
+      }
+
+      $.ajax({
+        url : url,
+        type: "POST",
+        data : {
+          csrfmiddlewaretoken: csrfmiddlewaretoken,
+          name: $('#name').val()
+        },
+        dataType : "json",
+        success: function( data ){
+          window.location.reload();
+        },
+        error: function(data) {
+          for (var key in data.responseJSON) {
+            toastr.error(key + ":" + data.responseJSON[key][0], "Form Hatası");
+          }
+        }
+      });
+    });
+  });
+ </script> 
+{% endblock footer %}

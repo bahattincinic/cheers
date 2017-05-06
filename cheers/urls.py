@@ -1,8 +1,14 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from criterion.views import CriterionListView
+from supplier.views import DashboardView, SupplierListView
+
 
 urlpatterns = [
+    url(r'^$', DashboardView.as_view()),
+    url(r'^criterions/$', CriterionListView.as_view()),
+    url(r'^suppliers/$', SupplierListView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('django.contrib.auth.urls')),
 ]

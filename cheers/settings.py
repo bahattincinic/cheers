@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'supplier',
     'criterion',
+    'account',
     'django_extensions'
 ]
 

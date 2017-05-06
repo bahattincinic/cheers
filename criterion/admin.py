@@ -3,5 +3,9 @@ from django.contrib import admin
 from .models import Criterion, CriterionScore
 
 
-admin.site.register(Criterion)
+class CriterionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'parent',)
+
+
+admin.site.register(Criterion, CriterionAdmin)
 admin.site.register(CriterionScore)

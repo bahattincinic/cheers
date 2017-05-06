@@ -3,5 +3,94 @@
 {% block title %} - Tedarikciler{% endblock title %}
 
 {% block content %}
-  
+  <div class="row">
+    <div class="col-md-3" style="float: right;">
+       <!-- Button trigger modal -->
+       <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createSupplier"
+            style="margin-right: 12px; float: right">
+         + Yeni Tedarikçi Ekle
+       </button> 
+    </div>
+  </div>
+
+    <div class="col-xs-12">
+        <table class="table">
+          <thead>
+            <th>Tedarikçi Adı</th>
+            <th>İşlem</th>
+          </thead>
+          <tbody>
+          {% for supplier in object_list %}
+            <tr>
+              <td>{{ supplier.name }}</td>
+              <td>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    İşlem <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-target="#updateSupplier">Tedarikçi Bilgilerini Güncelle</a></li>
+                    <li><a href="#">Kriter Güncelleme</a></li>
+                    <li><a href="#">Sil</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="text-center">
+          {% include "paginate.html" %}
+        </div>
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="createSupplier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Yeni Tedarikçi Ekle</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Tedarikci Adı</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+          <button type="button" class="btn btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="updateSupplier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Tedarikçi Güncelle</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Tedarikci Adı</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Marmara Forum">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+          <button type="button" class="btn btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

@@ -123,3 +123,9 @@ STATICFILES_DIRS = (
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/accounts/logout/'
+
+
+# Fixtures
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'fixtures'),
+)

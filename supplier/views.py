@@ -24,3 +24,4 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 class SupplierListView(LoginRequiredMixin, ListView):
     model = Supplier
     template_name = 'suppliers.html'
+    paginate_by = 10

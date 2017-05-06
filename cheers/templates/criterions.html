@@ -4,5 +4,117 @@
 
 
 {% block content %}
-  
+      <div class="row">
+        <div class="col-md-3" style="float: right;">
+           <!-- Button trigger modal -->
+           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createRule"
+                style="margin-right: 12px; float: right">
+             + Yeni Kriter Ekle
+           </button> 
+        </div>
+      </div>
+
+    <div class="col-xs-12">
+        <table class="table">
+          <thead>
+            <th>Kriter Adı</th>
+            <th>Ana Kriter</th>
+            <th>İşlem</th>
+          </thead>
+          <tbody>
+            {% for criterion in object_list %}
+              <tr>
+                <td>{{ criterion.name }}</td>
+                <td>
+                  {% if criterion.parent_id %}
+                    {{ criterion.parent.name }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      İşlem <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="#"  href="#" data-toggle="modal" data-target="#updateRule">Kriter Bilgilerini Güncelle</a></li>
+                      <li><a href="#">Sil</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="text-center">
+          {% include "paginate.html" %}
+        </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="createRule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Yeni Kriter Ekle</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Kriter Adı</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Ana Kriter</label>
+              <select class="form-control select select-primary" data-toggle="select">
+                <option value="0">Bu bir ana kriter</option>
+                <option value="1">Yönetim</option>
+                <option value="2">Dökümantasyon</option>ü
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+          <button type="button" class="btn btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <!-- Modal -->
+  <div class="modal fade" id="updateRule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Kriter Güncelle</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Kriter Adı</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Üst Yönetim Desteği">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Ana Kriter</label>
+              <select class="form-control select select-primary" data-toggle="select">
+                <option value="0">Bu bir ana kriter</option>
+                <option value="1">Yönetim</option>
+                <option value="2">Dökümantasyon</option>ü
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+          <button type="button" class="btn btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

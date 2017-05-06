@@ -7,3 +7,4 @@ from .models import Criterion
 class CriterionListView(LoginRequiredMixin, ListView):
     model = Criterion
     template_name = 'criterions.html'
+    paginate_by = 10

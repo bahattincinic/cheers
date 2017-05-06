@@ -1,6 +1,62 @@
 {% extends "base_site.html" %}
 
+{% block title %} - Anasayfa{% endblock title %}
 
 {% block content %}
-  
+  <div class="col-xs-12">
+    <div class="col-md-4">
+      <div class="panel panel-info panel-inverse">
+        <div class="panel-heading panel-header-inverse">CHEERS</div>
+        <div class="panel-body">
+          Bu uygulama çok sayıda kriter içerisinde bir karar verme durumunda olan şirketlerin, onların belirlediği beklenti ve bu beklentilerin öncelikleri doğrultusunda hareket ederek tedarikçi seçimini yapmaktadır.
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-success panel-inverse">
+        <div class="panel-heading panel-header-inverse">Önem Skalası</div>
+        <ul class="list-group">
+          <li class="list-group-item"><a href="#">1 - Eşit Önem</a></li>
+          <li class="list-group-item"><a href="#">3 - Birinci faktör ikinci faktörden daha önemli</a></li>
+          <li class="list-group-item"><a href="#">5- Birinci faktör ikinci faktörden çok önemli</a></li>
+          <li class="list-group-item"><a href="#">7 - Birinci faktör ikinci faktöre nazaran çok daha önemli</a></li>
+          <li class="list-group-item"><a href="#">9 - Birinci faktör ikinci faktöre nazaran mutlak üstün önemli</a></li>
+          <li class="list-group-item"><a href="#">2,4,6,8 - Ara değerler</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-danger panel-inverse">
+        <div class="panel-heading panel-header-inverse">İstatistik</div>
+        <div class="panel-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Parametre</th>
+                <th>Sayısı</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tedarikçiler</td>
+                <td>{{ supplier_count }}</td>
+              </tr>
+              <tr>
+                <td>Alt Kriterler</td>
+                <td>{{ child_criterion_count }}</td>
+              </tr>
+              <tr>
+                <td>Ana Kriterler</td>
+                <td>{{ main_criterion_count }}</td>
+              </tr>
+              <tr>
+                <td>Kullanıcılar</td>
+                <td>{{ user_count }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>  
 {% endblock content %}

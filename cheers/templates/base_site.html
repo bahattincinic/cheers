@@ -8,14 +8,14 @@
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" href="#">CHEERS</a>
+          <a class="navbar-brand" href="{% url 'home' %}">CHEERS</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-01">
 
           <ul class="nav navbar-nav navbar-left">
-            <li><a href="#">Anasayfa</a></li>
-            <li><a href="#">Tedarikciler</a></li>
-            <li><a href="#">Kriterler</a></li>
+            <li><a href="{% url 'home' %}">Anasayfa</a></li>
+            <li><a href="{% url 'suppliers' %}">Tedarikciler</a></li>
+            <li><a href="{% url 'criterions' %}">Kriterler</a></li>
             <li><a href="#">Raporlar</a></li>
            </ul>
            
@@ -26,7 +26,7 @@
               <ul class="dropdown-menu">
                 <li><a href="#">Profilimi Güncelle</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Çıkış</a></li>
+                <li><a href="{% url 'logout' %}">Çıkış</a></li>
               </ul>
             </li>
            </ul>
@@ -34,8 +34,8 @@
       </nav>
     </div>
 
-    {% block blockname %}
+    {% block content %}
       
-    {% endblock blockname %}
+    {% endblock content %}
  </div> 
 {% endblock body %}

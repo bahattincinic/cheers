@@ -1,12 +1,24 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
+from django.contrib.auth.models import User
 
+from criterion.models import Criterion
 from .models import Supplier
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context['supplier_count'] = Supplier.objects.count()
+        context['main_criterion_count'] = Criterion.objects.filter(
+            parent__isnull=True).count()
+        context['child_criterion_count'] = Criterion.objects.filter(
+            parent__isnull=False).count()
+        context['user_count'] = User.objects.filter(is_active=True).count()
+        return context
 
 
 class SupplierListView(LoginRequiredMixin, ListView):

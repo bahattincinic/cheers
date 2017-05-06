@@ -3,3 +3,7 @@ psycopg2==2.7.1
 djangorestframework==3.6.2
 django-compressor==2.1.1
 django-bootstrap3==8.2.3
+
+ipdb==0.10.3
+ipython==6.0.0
+django-extensions==1.7.9

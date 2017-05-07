@@ -1,0 +1,100 @@
+{% extends "base_site.html" %}
+
+
+{% block content %}
+ <div class="container">
+   <div class="row bs-wizard" style="border-bottom:0; margin-left: 1px; margin-right: 60px;">
+       <div class="col-xs-3 bs-wizard-step complete">
+         <div class="text-center bs-wizard-stepnum">Adım 1</div>
+         <div class="progress"><div class="progress-bar"></div></div>
+         <a href="#" class="bs-wizard-dot"></a>
+         <div class="bs-wizard-info text-center">Kriterlerin Puanlamaları</div>
+       </div>
+       
+       <div class="col-xs-3 bs-wizard-step disabled"><!-- complete -->
+         <div class="text-center bs-wizard-stepnum">Adım 2</div>
+         <div class="progress"><div class="progress-bar"></div></div>
+         <a href="#" class="bs-wizard-dot"></a>
+         <div class="bs-wizard-info text-center">Verilerin Puanlaması ve Kısırlarla Ağırlaklandırması</div>
+       </div>
+       
+       <div class="col-xs-3 bs-wizard-step disabled">
+         <div class="text-center bs-wizard-stepnum">Adım 3</div>
+         <div class="progress"><div class="progress-bar"></div></div>
+         <a href="#" class="bs-wizard-dot"></a>
+         <div class="bs-wizard-info text-center">Kriter Kıyaslamaları</div>
+       </div>
+       
+       <div class="col-xs-3 bs-wizard-step disabled"><!-- active -->
+         <div class="text-center bs-wizard-stepnum">Adım 4</div>
+         <div class="progress"><div class="progress-bar"></div></div>
+         <a href="#" class="bs-wizard-dot"></a>
+         <div class="bs-wizard-info text-center">Sonuç</div>
+       </div>
+   </div>  
+  </div>
+ </div>
+ <div class="container" style="margin-top: 20px; margin-bottom: 50px">
+   <div style="margin-left: 14px; margin-right: 14px;">
+     <form method="post">
+        {% csrf_token %}
+        <table class="table">
+          <thead>
+            <tr style="background-color: #efefef;">
+              <th style="width: 33%">Sıra No</th>
+              <th style="width: 33%">Ana Kriterler</th>
+              <th style="width: 33%">Puan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for criterion in criterions %}
+               <tr>
+                 <th>{{ forloop.counter }}</th>
+                 <th style="font-weight: normal">{{ criterion.name }}</th>
+                 <th>
+                   <input
+                    type="number"
+                    min="1"
+                    max="9"
+                    required="required"
+                    name="score_{{ criterion.id }}"
+                    class="form-control"
+                    value="{{ criterion.priority }}" 
+                  />
+                 </th>
+               </tr>
+            {% endfor %}
+            {% for criterion in criterions %}
+               <tr style="background-color: #efefef;">
+                 <th style="font-weight: bold">{{ forloop.counter }} - {{ criterion.name }}</th>
+                 <th style="font-weight: bold">Kriterler</th>
+                 <th style="font-weight: bold">Puan</th>
+               </tr>
+               {% for child in criterion.criterion_set.all %}
+                 <tr>
+                   <th style="font-weight: normal">{{ forloop.parentloop.counter }}, {{ forloop.counter }}</th>
+                   <th style="font-weight: normal">{{ child.name }}</th>
+                   <th>
+                     <input
+                      type="number"
+                      min="1"
+                      max="9"
+                      required="required"
+                      name="score_{{ child.id }}"
+                      class="form-control"
+                      value="{{ child.priority }}"
+                     />
+                   </th>
+                 </tr>
+               {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="float: right">
+          <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" />
+        </div>
+     </form>
+   </div>
+ </div>
+{% endblock content %}

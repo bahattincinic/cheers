@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'supplier',
     'criterion',
     'account',
+    'decision',
     'django_extensions'
 ]
 
@@ -130,3 +131,5 @@ LOGOUT_URL = '/accounts/logout/'
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
 )
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

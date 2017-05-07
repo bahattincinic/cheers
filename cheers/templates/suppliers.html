@@ -29,9 +29,8 @@
                     İşlem <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a href="#" data-toggle="modal" data-target="#updateSupplier">Tedarikçi Bilgilerini Güncelle</a></li>
                     <li><a href="#" class="updateItem" data-id="{{ supplier.id }}" data-name="{{ supplier.name }}">
-                      Kriter Güncelleme
+                      Güncelle
                     </a></li>
                     <li><a href="{% url 'supplier-delete' supplier.id %}">Sil</a></li>
                   </ul>

@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', DashboardView.as_view(), name="home"),
     url(r'^criterions/', include('criterion.urls')),
     url(r'^suppliers/', include('supplier.urls')),
+    url(r'^decision/', include('decision.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^accounts/update-profile$', ProfileUpdateView.as_view(),

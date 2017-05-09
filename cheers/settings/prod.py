@@ -8,9 +8,9 @@ DEBUG = False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MIDDLEWARE = [
+MIDDLEWARE += [
     'whitenoise.middleware.WhiteNoiseMiddleware'
-] + MIDDLEWARE
+]
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',

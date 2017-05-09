@@ -1,5 +1,6 @@
 from .base import *
 import dj_database_url
+from decouple import config
 
 
 ALLOWED_HOSTS = ['*']
@@ -16,5 +17,9 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
 ] + INSTALLED_APPS
 
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}

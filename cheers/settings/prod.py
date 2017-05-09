@@ -7,8 +7,6 @@ ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MIDDLEWARE += [
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]

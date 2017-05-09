@@ -8,6 +8,8 @@ __pycache__/
 
 static/
 
+dev.py
+
 # DB
 *.sqlite3
 

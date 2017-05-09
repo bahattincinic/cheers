@@ -40,6 +40,11 @@ install requirements
 
     $ pip install -r requirements.txt
 
+copy settings file
+
+    $ cp cheers/settings/dev.py-dist cheers/settings.dev.py
+    $ export DJANGO_SETTINGS_MODULE="provas.settings.dev"
+
 To run the project, Follow the following commands:
 
     $ python manage.py migrate

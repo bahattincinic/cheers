@@ -54,3 +54,11 @@ if you want to import initial data, You can run the following commands:
 
     $ python manage.py loaddata cheers/fixtures/supplier.json
     $ python manage.py loaddata cheers/fixtures/criterion.json
+
+
+## Deployment
+
+```
+$ heroku login
+$ git push heroku master
+```

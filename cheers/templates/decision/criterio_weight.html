@@ -88,7 +88,6 @@
                             value="{% get_supplier_criterion_score scores supplier.id child.id %}"
                             required="required"
                             class="form-control"
-                            onchange="calculate()"
                           />
                         </td>
                       {% endfor %}
@@ -129,6 +128,16 @@
  <script type="text/javascript">
    $(function() {
     calculate();
+
+    $('input[type=number]').on('change', function(event){
+      var value = parseInt($(this).val());
+      if (value && value < 10 && value > 0) {
+        calculate();
+      } else {
+        $(this).val(0);
+        calculate();
+      }
+    });
    });
 
    function calculate() {

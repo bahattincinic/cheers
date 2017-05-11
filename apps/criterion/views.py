@@ -10,7 +10,7 @@ from .models import Criterion
 
 class CriterionListView(LoginRequiredMixin, ListView):
     queryset = Criterion.objects.order_by('-id')
-    template_name = 'criterions.html'
+    template_name = 'criterion/criterions.html'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):

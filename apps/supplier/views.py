@@ -12,7 +12,7 @@ from .mixins import AjaxableResponseMixin
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'dashboard.html'
+    template_name = 'supplier/dashboard.html'
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
@@ -27,7 +27,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class SupplierListView(LoginRequiredMixin, ListView):
     queryset = Supplier.objects.order_by('-id')
-    template_name = 'suppliers.html'
+    template_name = 'supplier/suppliers.html'
     paginate_by = 10
 
 

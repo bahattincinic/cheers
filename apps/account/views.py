@@ -7,7 +7,7 @@ from .forms import UserUpdateForm
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'update_profile.html'
+    template_name = 'account/update_profile.html'
     form_class = UserUpdateForm
     model = User
 

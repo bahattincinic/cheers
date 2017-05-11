@@ -7,7 +7,7 @@ from criterion.models import Criterion
 
 
 class CriterionHierarchyView(LoginRequiredMixin, TemplateView):
-    template_name = 'criterion_hierarchy.html'
+    template_name = 'decision/criterion_hierarchy.html'
 
     def get_context_data(self, **kwargs):
         context = super(CriterionHierarchyView, self).get_context_data(
@@ -20,7 +20,7 @@ class CriterioScoreView(LoginRequiredMixin, TemplateView):
     """
     AHP Step-1
     """
-    template_name = 'ahp_criterion_score.html'
+    template_name = 'decision/ahp_criterion_score.html'
 
     def get_context_data(self, **kwargs):
         context = super(CriterioScoreView, self).get_context_data(
@@ -44,4 +44,4 @@ class CriterioWeightView(LoginRequiredMixin, TemplateView):
     """
     AHP Step-2
     """
-    template_name = "criterio_weight.html"
+    template_name = "decision/criterio_weight.html"

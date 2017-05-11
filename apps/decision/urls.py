@@ -2,7 +2,8 @@ from django.conf.urls import url
 
 from .views import (
     CriterionHierarchyView, CriterioScoreView,
-    CriterioWeightView)
+    CriterioWeightView, CriterioCompareView
+)
 
 
 urlpatterns = [
@@ -12,4 +13,6 @@ urlpatterns = [
         name="criterion-score"),
     url(r'^criterion-weight/$', CriterioWeightView.as_view(),
         name="criterion-weight"),
+    url(r'^criterion-compare/$', CriterioCompareView.as_view(),
+        name="criterion-compare"),
 ]

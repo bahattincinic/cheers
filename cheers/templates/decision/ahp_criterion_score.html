@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% block title %} - Adım 1{% endblock title %}
+
 
 {% block content %}
  <div class="container">
@@ -64,12 +66,14 @@
                  </th>
                </tr>
             {% endfor %}
+
             {% for criterion in criterions %}
                <tr style="background-color: #efefef;">
                  <th style="font-weight: bold">{{ forloop.counter }} - {{ criterion.name }}</th>
                  <th style="font-weight: bold">Kriterler</th>
                  <th style="font-weight: bold">Puan</th>
                </tr>
+
                {% for child in criterion.criterion_set.all %}
                  <tr>
                    <th style="font-weight: normal">{{ forloop.parentloop.counter }}, {{ forloop.counter }}</th>

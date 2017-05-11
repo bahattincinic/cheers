@@ -1,5 +1,9 @@
 {% extends "base_site.html" %}
 
+{% load calculation %}
+
+{% block title %} - Adım 2{% endblock title %}
+
 
 {% block content %}
  <div class="container">
@@ -35,4 +39,74 @@
   </div>
  </div>
  
+
+ <div class="container">
+   <div style="margin-left: 20px; margin-top: 30px;">
+     
+     <form method="post">
+        {% csrf_token %}
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+           {% for criterion in criterions %}
+             <li role="presentation" {% if forloop.first %}class="active"{% endif %}>
+               <a href="#tab_{{ criterion.id }}"
+                   id="label_{{ criterion.id }}"
+                   aria-controls="tab_{{ criterion.id }}"
+                   role="tab" data-toggle="tab" style="color: #2f4154">
+                 {{ criterion.name }} <span class="badge">{{ criterion.criterion_set.count }}</span>
+               </a>
+             </li>
+           {% endfor %}
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          {% for criterion in criterions %}
+            <div role="tabpanel"
+                aria-labelledby="label_{{ criterion.id }}"
+                class="tab-pane {% if forloop.first %}active{% endif %}"
+                id="tab_{{ criterion.id }}">
+              <table class="table" style="margin-top: 20px;">
+                <thead>
+                  <tr style="background-color: #efefef;">
+                    <th style="font-size: 11px">Tedarikçi</th>
+                    {% for child in criterion.criterion_set.all %}
+                      <th  style="font-size: 11px">{{ child.name }}</th>
+                    {% endfor %}
+                    <th style="font-size: 11px">Toplam</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for supplier in suppliers %}
+                    <tr>
+                      <td  style="font-size: 11px">{{ supplier.name }}</td>
+                      {% for child in criterion.criterion_set.all %}
+                        <td style="font-size: 11px">
+                           <input
+                            type="number"
+                            min="1"
+                            max="9"
+                            name="score_{{ child.id }}_{{ supplier.id }}"
+                            value="{% get_supplier_criterion_score scores supplier.id child.id %}"
+                            required="required"
+                            class="form-control"
+                          />
+                        </td>
+                      {% endfor %}
+                      <td  style="font-size: 11px">0</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div style="float: right;margin-bottom: 30px;">
+          <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" />
+        </div>
+     </form>
+
+   </div>
+ </div>
+
 {% endblock content %}

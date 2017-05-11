@@ -43,7 +43,7 @@ install requirements
 copy settings file
 
     $ cp cheers/settings/dev.py-dist cheers/settings.dev.py
-    $ export DJANGO_SETTINGS_MODULE="provas.settings.dev"
+    $ export DJANGO_SETTINGS_MODULE="cheers.settings.dev"
 
 To run the project, Follow the following commands:
 

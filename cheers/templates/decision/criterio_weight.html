@@ -88,12 +88,28 @@
                             value="{% get_supplier_criterion_score scores supplier.id child.id %}"
                             required="required"
                             class="form-control"
+                            onchange="calculate()"
                           />
                         </td>
                       {% endfor %}
-                    </tr>
+                      </tr>
                   {% endfor %}
                 </tbody>
+
+                <tfoot>
+                  <tr style="background-color: #efefef;">
+                    <td>Toplam</td>
+                    {% for child in criterion.criterion_set.all %}
+                    <td>0</td>
+                    {% endfor %}
+                  </tr style="background-color: #efefef;">
+                  <tr style="background-color: #efefef;">
+                    <td>Ortalama</td>
+                    {% for child in criterion.criterion_set.all %}
+                    <td>0</td>
+                    {% endfor %}
+                  </tr>
+                </tfoot>
               </table>
             </div>
           {% endfor %}
@@ -108,3 +124,42 @@
  </div>
 
 {% endblock content %}
+
+{% block footer %}
+ <script type="text/javascript">
+   $(function() {
+    calculate();
+   });
+
+   function calculate() {
+      _.forEach($('table.table'), function(table) {
+        var total = {};
+        var supplierCount = {{ suppliers.count }};
+        _.forEach($(table).find('tbody > tr'), function(row) {
+          _.forEach($(row).find('td'), function(column, index) {
+            if ($(column).find('input').length > 0) {
+              if (total[index]) {
+                total[index] += parseInt($(column).find('input').val()) || 0;
+              } else {
+                total[index] = parseInt($(column).find('input').val()) || 0;
+              }
+            }
+          });
+        });
+
+        // Total
+        _.forEach($(table).find('tfoot > tr:eq(0) > td'), function(column, index) {
+          if (index !== 0) {
+            $(column).text(total[index] || 0);
+          }
+        });
+        // Average
+        _.forEach($(table).find('tfoot > tr:eq(1) > td'), function(column, index) {
+          if (index !== 0) {
+            $(column).text(Math.round((total[index] || 0) / supplierCount));
+          }
+        });
+      });
+   }
+ </script> 
+{% endblock footer %}

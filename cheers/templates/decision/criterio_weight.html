@@ -72,7 +72,6 @@
                     {% for child in criterion.criterion_set.all %}
                       <th  style="font-size: 11px">{{ child.name }}</th>
                     {% endfor %}
-                    <th style="font-size: 11px">Toplam</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -92,7 +91,6 @@
                           />
                         </td>
                       {% endfor %}
-                      <td  style="font-size: 11px">0</td>
                     </tr>
                   {% endfor %}
                 </tbody>

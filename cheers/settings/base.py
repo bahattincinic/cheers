@@ -27,6 +27,7 @@ ALLOWED_HOSTS = []
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -146,4 +147,3 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
 )
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

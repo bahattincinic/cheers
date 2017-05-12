@@ -39,45 +39,46 @@
  
 
  <div class="container">
-
+  <div style="margin-left: 20px; margin-top: 30px;">
     <legend>Kriterlerin Kendi Aralarında Kıyası</legend>
-   <form method="post">
-      {% csrf_token %}
-      <table class="table" style="margin-top: 20px;">
-        <thead>
-          <tr>
-            <th>Kriterler</th>
-            {% for criterion in criterions %}
-              <th>{{ criterion.name }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for criterion in criterions %}
+     <form method="post">
+        {% csrf_token %}
+        <table class="table" style="margin-top: 20px;">
+          <thead>
             <tr>
-              <td>{{ criterion.name }}</td>
-              {% for child in criterions %}
-                <td>
-                  <input
-                    type="text"
-                    required="required"
-                    class="form-control"
-                    {% if forloop.counter == forloop.parentloop.counter or forloop.counter < forloop.parentloop.counter %}
-                      disabled style="color: #2f4154;"
-                    {% endif %}
-                    value="{% if forloop.counter == forloop.parentloop.counter %}1.0{% endif %}"
-                  />
-                </td>
+              <th>Kriterler</th>
+              {% for criterion in criterions %}
+                <th>{{ criterion.name }}</th>
               {% endfor %}
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-   </form>
+          </thead>
+          <tbody>
+            {% for criterion in criterions %}
+              <tr>
+                <td>{{ criterion.name }}</td>
+                {% for child in criterions %}
+                  <td>
+                    <input
+                      type="text"
+                      required="required"
+                      class="form-control"
+                      {% if forloop.counter == forloop.parentloop.counter or forloop.counter < forloop.parentloop.counter %}
+                        disabled style="color: #2f4154;"
+                      {% endif %}
+                      value="{% if forloop.counter == forloop.parentloop.counter %}1.0{% endif %}"
+                    />
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+     </form>
 
-   <div style="float: right;margin-bottom: 30px;">
-     <button class="btn btn-lg btn-inverse">Normalize Tablosunu Göster</button>
-   </div>
+     <div style="float: right;margin-bottom: 30px;">
+       <button class="btn btn-lg btn-inverse">Normalize Tablosunu Göster</button>
+     </div>
+  </div>
  </div>
 {% endblock content %}
 

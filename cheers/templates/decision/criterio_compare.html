@@ -43,7 +43,7 @@
     <legend>Kriterlerin Kendi Aralarında Kıyası</legend>
      <form method="post">
         {% csrf_token %}
-        <table class="table" style="margin-top: 20px;">
+        <table class="table" style="margin-top: 20px;" id="table1">
           <thead>
             <tr>
               <th>Kriterler</th>
@@ -80,12 +80,40 @@
                 {% endfor %}
               </tr>
             </tfoot>
-          </table>
         </table>
+
+
+        <div id="hidden--table" style="display: none; margin-top: 30px;">
+          <legend>Normalize Edilmiş Kriterlerin Kendi Aralarında Kıyası</legend>
+
+          <table class="table" style="margin-top: 10px;" id="table2">
+            <thead>
+              <tr>
+                <th>Kriterler</th>
+                {% for criterion in criterions %}
+                  <th>{{ criterion.name }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for criterion in criterions %}
+                <tr>
+                  <td>{{ criterion.name }}</td>
+                  {% for child in criterions %}
+                    <td>
+                      0
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
      </form>
 
      <div style="float: right;margin-bottom: 30px;">
-       <button class="btn btn-lg btn-inverse">Normalize Tablosunu Göster</button>
+       <button class="btn btn-lg btn-inverse" id="showTable">Normalize Tablosunu Göster</button>
+       <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" id="btn-save" style="display:none;" />
      </div>
   </div>
  </div>
@@ -99,9 +127,9 @@
         var parsedValue = value.split('/');
         var rowIndex = $(this).parent().parent().index() + 1;
         var cellIndex = $(this).parent().index();
-        var input = $('table tr:eq(' + cellIndex  +  ') > td:eq(' + rowIndex + ')').find('input');
+        var input = $('#table1 tr:eq(' + cellIndex  +  ') > td:eq(' + rowIndex + ')').find('input');
 
-        if (parsedValue.length === 2) {
+        if (parsedValue.length === 2 && parseInt(parsedValue[0]) && parseInt(parsedValue[1])) {
           $(this).val(parseFloat(parseInt(parsedValue[0]) / parseInt(parsedValue[1])).toFixed(2));
           $(input).val( parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toFixed(2) );
           calculateTotal();
@@ -110,11 +138,28 @@
          $(input).val('');
         }
       });
+
+      $('#showTable').click(function() {
+        $('#hidden--table').show();
+        $('#showTable').hide();
+        $('#btn-save').show();
+        _.forEach($('#table1 tbody > tr > td'), function(column){
+          if ($(column).find('input').length > 0) {
+            var value = $(column).find('input').val();
+            var cellIndex = $(column).index();
+            var rowIndex = $(column).parent().index();
+            var total = parseFloat($('#table1 tfoot  > tr:eq(0) > td:eq(' + cellIndex + ') ').text());
+            var calculateTotal = parseFloat(parseFloat(value) / parseFloat(total)).toFixed(2);
+            $('#table2 tbody > tr:eq(' + rowIndex + ') > td:eq(' +  cellIndex + ')').text(calculateTotal);
+          }
+        });
+      });
+
     });
 
     function calculateTotal() {
       var total = {};
-      _.forEach($('table tbody > tr > td'), function(column){
+      _.forEach($('#table1 tbody > tr > td'), function(column){
         if ($(column).find('input').length > 0) {
           var index = $(column).index();
           if (total[index]) {
@@ -125,7 +170,7 @@
         }
       });
 
-      _.forEach($('table tfoot > tr:eq(0) > td'), function(column, index) {
+      _.forEach($('#table1 tfoot > tr:eq(0) > td'), function(column, index) {
         if (index !== 0) {
           $(column).text(parseFloat(total[index]).toFixed(2) || parseFloat(0.0));
         }

@@ -72,6 +72,15 @@
               </tr>
             {% endfor %}
           </tbody>
+            <tfoot>
+              <tr style="background-color: #efefef;">
+                <td>Sütun Toplamları</td>
+                {% for child in criterions %}
+                <td>0</td>
+                {% endfor %}
+              </tr>
+            </tfoot>
+          </table>
         </table>
      </form>
 
@@ -93,13 +102,34 @@
         var input = $('table tr:eq(' + cellIndex  +  ') > td:eq(' + rowIndex + ')').find('input');
 
         if (parsedValue.length === 2) {
-          $(this).val(parseFloat(parseInt(parsedValue[0]) / parseInt(parsedValue[1])).toPrecision(2));
-          $(input).val( parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toPrecision(2) );
+          $(this).val(parseFloat(parseInt(parsedValue[0]) / parseInt(parsedValue[1])).toFixed(2));
+          $(input).val( parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toFixed(2) );
+          calculateTotal();
         } else {
          $(this).val('');
          $(input).val('');
         }
       });
     });
+
+    function calculateTotal() {
+      var total = {};
+      _.forEach($('table tbody > tr > td'), function(column){
+        if ($(column).find('input').length > 0) {
+          var index = $(column).index();
+          if (total[index]) {
+            total[index] += parseFloat($(column).find('input').val()) || parseFloat(0.0);
+          } else {
+            total[index] = parseFloat($(column).find('input').val()) || parseFloat(0.0);
+          }
+        }
+      });
+
+      _.forEach($('table tfoot > tr:eq(0) > td'), function(column, index) {
+        if (index !== 0) {
+          $(column).text(parseFloat(total[index]).toFixed(2) || parseFloat(0.0));
+        }
+      });
+    }
  </script> 
 {% endblock footer %}

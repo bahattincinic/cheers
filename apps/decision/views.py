@@ -86,3 +86,12 @@ class CriterioCompareView(LoginRequiredMixin, TemplateView):
     AHP Step-3
     """
     template_name = "decision/criterio_compare.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CriterioCompareView, self).get_context_data(
+            **kwargs)
+
+        context['criterions'] = Criterion.objects.filter(
+            parent__isnull=True)
+
+        return context

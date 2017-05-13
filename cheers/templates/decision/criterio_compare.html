@@ -22,16 +22,16 @@
         <table class="table" style="margin-top: 20px;" id="table1">
           <thead>
             <tr style="background-color: #efefef;">
-              <th>Kriterler</th>
+              <th data-id="0">Kriterler</th>
               {% for criterion in criterions %}
-                <th>{{ criterion.name }}</th>
+                <th data-id="{{ criterion.id }}">{{ criterion.name }}</th>
               {% endfor %}
             </tr>
           </thead>
           <tbody>
             {% for criterion in criterions %}
               <tr>
-                <td>{{ criterion.name }}</td>
+                <td data-id="{{ criterion.id }}">{{ criterion.name }}</td>
                 {% for child in criterions %}
                   <td>
                     <input
@@ -65,16 +65,16 @@
           <table class="table" style="margin-top: 10px;" id="table2">
             <thead>
               <tr style="background-color: #efefef;">
-                <th>Kriterler</th>
+                <th data-id="0">Kriterler</th>
                 {% for criterion in criterions %}
-                  <th>{{ criterion.name }}</th>
+                  <th data-id="{{ criterion.id }}">{{ criterion.name }}</th>
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
               {% for criterion in criterions %}
                 <tr>
-                  <td>{{ criterion.name }}</td>
+                  <td data-id="{{ criterion.id }}">{{ criterion.name }}</td>
                   {% for child in criterions %}
                     <td>
                       0
@@ -275,18 +275,24 @@
 
     function getMatrisFromTable(table) {
       var tableData = [
-        _.map($(table + ' > thead tr:eq(0) > th'), function(item){ return $(item).text() })
+        _.map($(table + ' > thead tr:eq(0) > th'), function(item){
+            return $(item).data('id') != undefined ? 'criterion_' + $(item).data('id') : $(item).text();
+        })
       ];
       for (var i=0; i < $(table + ' > tbody > tr').length; i++) {
         var row = [];
-        for (var j = 1; j < $($(table + ' > tbody > tr')[i]).find('td').length; j++) {
+        for (var j = 0; j < $($(table + ' > tbody > tr')[i]).find('td').length; j++) {
           var input = $($($(table + ' tbody > tr')[i]).find('td')[j]);
           if (input.find('input').length > 0) {
             var value = parseFloat($(input.find('input')).val());
             row.push(value);
           } else {
-            var value = parseFloat(input.text());
-            row.push(value);
+            if (input.data('id') !== undefined) {
+              row.push('criterion_' + input.data('id'));
+            } else {
+              var value = parseFloat(input.text());
+              row.push(value);
+            }
           }
         }
         tableData.push(row);

@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% load jsonify %}
+
 {% block title %} - Adım 3{% endblock title %}
 
 
@@ -16,6 +18,13 @@
 {% block footer %}
   <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
   <script type="text/javascript">
+    var data = {
+      id: {{ report.id|jsonify }},
+      criterion_priority: {{ report.criterion_priority|jsonify|safe }},
+      criterion_supplier_score: {{ report.criterion_supplier_score|jsonify|safe }},
+      criterion_compare: {{ report.criterion_compare|jsonify|safe }}
+    };
+
     $(function() {
       Highcharts.chart('container', {
         chart: {

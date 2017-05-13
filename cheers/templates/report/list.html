@@ -1,0 +1,31 @@
+{% extends "base_site.html" %}
+
+{% block title %} - Raporlar{% endblock title %}
+
+{% block content %}
+  <div class="col-xs-12">
+      <table class="table">
+        <thead>
+          <th>Rapor Numarası</th>
+          <th>Alınma Tarihi</th>
+          <th>İşlem</th>
+        </thead>
+        <tbody>
+        {% for report in object_list %}
+          <tr>
+            <td>#{{ report.id }}</td>
+            <td>{{ report.created_at }}</td>
+            <td>
+              <a href="#" class="btn btn-inverse">Detay</a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="text-center">
+        {% include "partial/paginate.html" %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

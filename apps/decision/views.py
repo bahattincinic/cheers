@@ -1,11 +1,13 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
-from criterion.models import Criterion, CriterionScore
+from criterion.models import Criterion
 from supplier.models import Supplier
+from report.models import Report
 
 
 class CriterionHierarchyView(LoginRequiredMixin, TemplateView):
@@ -16,6 +18,19 @@ class CriterionHierarchyView(LoginRequiredMixin, TemplateView):
             **kwargs)
         context['criterions'] = Criterion.objects.filter(parent__isnull=True)
         return context
+
+
+class CreateAhpView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        report = Report()
+        report.created_by = request.user
+        report.criterion_priority = {}
+        report.criterion_supplier_score = []
+        report.criterion_compare = {}
+        report.save()
+        return HttpResponseRedirect(
+            reverse('criterion-score', args=[report.id]))
 
 
 class CriterioScoreView(LoginRequiredMixin, TemplateView):
@@ -29,17 +44,28 @@ class CriterioScoreView(LoginRequiredMixin, TemplateView):
             **kwargs)
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
+        context['report'] = get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False)
         return context
 
     def post(self, request, *args, **kwargs):
+        report = get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False
+        )
+        report.criterion_priority = {}
+
         for key, value in request.POST.items():
             if "score" in key:
                 _, criterion_id = key.split('_')
-                criterion = Criterion.objects.get(
-                    id=criterion_id)
-                criterion.priority = value
-                criterion.save()
-        return HttpResponseRedirect(reverse('criterion-weight'))
+                report.criterion_priority[criterion_id] = value
+
+        report.save()
+        return HttpResponseRedirect(
+            reverse('criterion-weight', args=[report.id]))
 
 
 class CriterioWeightView(LoginRequiredMixin, TemplateView):
@@ -55,31 +81,31 @@ class CriterioWeightView(LoginRequiredMixin, TemplateView):
         context['suppliers'] = Supplier.objects.all()
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
-
-        context['scores'] = {
-            '%s_%s' % (score.criterion_id, score.supplier_id): score.score
-            for score in CriterionScore.objects.all()
-        }
+        context['report'] = get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False)
         return context
 
     def post(self, request, *args, **kwargs):
+        report = get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False
+        )
+        report.criterion_supplier_score = []
+
         for key, value in request.POST.items():
             if "score" in key:
                 _, criterion_id, supplier_id = key.split('_')
-                try:
-                    score = CriterionScore.objects.get(
-                        criterion_id=criterion_id,
-                        supplier_id=supplier_id
-                    )
-                    score.score = value
-                    score.save()
-                except CriterionScore.DoesNotExist:
-                    CriterionScore.objects.create(
-                        criterion_id=criterion_id,
-                        supplier_id=supplier_id,
-                        score=value
-                    )
-        return HttpResponseRedirect(reverse('criterion-compare'))
+                report.criterion_supplier_score.append({
+                    'criterion_id': criterion_id,
+                    'supplier_id': supplier_id,
+                    'score': value
+                })
+        report.save()
+        return HttpResponseRedirect(
+            reverse('criterion-compare', args=[report.id]))
 
 
 class CriterioCompareView(LoginRequiredMixin, TemplateView):
@@ -94,6 +120,10 @@ class CriterioCompareView(LoginRequiredMixin, TemplateView):
 
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
+        context['report'] = get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False)
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
             context['criterions'].count())

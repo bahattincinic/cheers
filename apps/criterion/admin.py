@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Criterion, CriterionScore
+from .models import Criterion
 
 
 class CriterionAdmin(admin.ModelAdmin):
@@ -8,4 +8,3 @@ class CriterionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Criterion, CriterionAdmin)
-admin.site.register(CriterionScore)

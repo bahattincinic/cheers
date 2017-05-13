@@ -1,7 +1,5 @@
 {% extends "base_site.html" %}
 
-{% load calculation %}
-
 {% block title %} - Adım 2{% endblock title %}
 
 
@@ -56,7 +54,7 @@
                             min="1"
                             max="9"
                             name="score_{{ child.id }}_{{ supplier.id }}"
-                            value="{% get_supplier_criterion_score scores supplier.id child.id %}"
+                            value="0"
                             required="required"
                             class="form-control"
                           />

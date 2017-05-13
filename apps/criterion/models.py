@@ -6,4 +6,4 @@ class Criterion(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return str(self.id)

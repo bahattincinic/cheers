@@ -10,7 +10,13 @@
 
  <div class="container">
   <div style="margin-left: 20px; margin-top: 30px;">
-    <legend>Kriterlerin Kendi Aralarında Kıyası</legend>
+
+    {% if parent %}
+      <legend>{{ parent.name }} Kriterinin Alt Kriterlerinin Kendi Aralarında Kıyası</legend>
+    {% else %}
+      <legend>Ana Kriterlerin Kendi Aralarında Kıyası</legend>
+    {% endif %}
+
      <form method="post">
         {% csrf_token %}
         <table class="table" style="margin-top: 20px;" id="table1">
@@ -119,17 +125,16 @@
             </div>
           </div>
 
-          <div class="alert alert-success" id="alertText">
-            
-          </div>
+          <input type="hidden" name="data" value="" />
 
+          <div class="alert alert-success" id="alertText"></div>
+        </div>
+
+        <div style="float: right;margin-bottom: 30px;">
+          <button class="btn btn-lg btn-inverse" id="showTable">Normalize Tablosunu Göster</button>
+          <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" id="btn-save" style="display:none;" />
         </div>
      </form>
-
-     <div style="float: right;margin-bottom: 30px;">
-       <button class="btn btn-lg btn-inverse" id="showTable">Normalize Tablosunu Göster</button>
-       <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" id="btn-save" style="display:none;" />
-     </div>
   </div>
  </div>
 {% endblock content %}
@@ -154,7 +159,8 @@
         }
       });
 
-      $('#showTable').click(function() {
+      $('#showTable').click(function(event) {
+        event.preventDefault();
         $('#hidden--table').show();
         $('#showTable').hide();
         $('#btn-save').show();
@@ -267,6 +273,27 @@
       });
     }
 
+    function getMatrisFromTable(table) {
+      var tableData = [
+        _.map($(table + ' > thead tr:eq(0) > th'), function(item){ return $(item).text() })
+      ];
+      for (var i=0; i < $(table + ' > tbody > tr').length; i++) {
+        var row = [];
+        for (var j = 1; j < $($(table + ' > tbody > tr')[i]).find('td').length; j++) {
+          var input = $($($(table + ' tbody > tr')[i]).find('td')[j]);
+          if (input.find('input').length > 0) {
+            var value = parseFloat($(input.find('input')).val());
+            row.push(value);
+          } else {
+            var value = parseFloat(input.text());
+            row.push(value);
+          }
+        }
+        tableData.push(row);
+      }
+      return tableData;
+    }
+
 
     function checkCalculation() {
       var cr_value = $('#table4 > tbody > tr:eq(3) > td:eq(1)').text();
@@ -274,6 +301,26 @@
         $('#alertText').text('Değerler TUTARLI. Bir sonraki adıma geçebilirsiniz.');
         $('#alertText').removeClass('alert-danger');
         $('#alertText').addClass('alert-success');
+
+        var json_data = {
+          main_table: getMatrisFromTable('#table1'),
+          normalized_table: getMatrisFromTable('#table2'),
+          w: [],
+          d: [],
+          e: [],
+          lambda: $('#table4 > tbody > tr:eq(0) > td:eq(1)').text(),
+          cl: $('#table4 > tbody > tr:eq(1) > td:eq(1)').text(),
+          ri: {{ random_indicator|safe }},
+          cr: $('#table4 > tbody > tr:eq(3) > td:eq(1)').text()
+        };
+
+        for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
+          json_data.w.push(parseFloat($($($('#table3 tbody > tr')[i]).find('td')[0]).text()));
+          json_data.d.push(parseFloat($($($('#table3 tbody > tr')[i]).find('td')[1]).text()));
+          json_data.e.push(parseFloat($($($('#table3 tbody > tr')[i]).find('td')[2]).text()));
+        }
+
+        $('input[name=data]').val(JSON.stringify(json_data));
       } else {
         $('#alertText').text('Değerler TUTARSIZ. Değerleri Yeniden Giriniz.');
         $('#alertText').removeClass('alert-success');

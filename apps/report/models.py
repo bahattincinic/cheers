@@ -7,6 +7,8 @@ class Report(models.Model):
     criterion_supplier_score = JSONField()
     criterion_compare = JSONField()
 
+    criterions = JSONField()
+
     is_completed = models.BooleanField(default=False)
 
     created_by = models.ForeignKey('auth.User')

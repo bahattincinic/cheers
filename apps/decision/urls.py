@@ -3,7 +3,7 @@ from django.conf.urls import url
 from .views import (
     CriterionHierarchyView, CriterioScoreView,
     CriterioWeightView, CriterioCompareView,
-    CreateAhpView
+    CreateAhpView, CriterioGlobalWeightView
 )
 
 
@@ -20,7 +20,10 @@ urlpatterns = [
     url(r'^step-2/criterion-weight/(?P<pk>[0-9]+)/$',
         CriterioWeightView.as_view(),
         name="criterion-weight"),
-    url(r'^step-3/criterion-compare/(?P<pk>[0-9]+)/$',
+    url(r'^step-3/criterion-compare/(?P<pk>[0-9]+)/(?P<parent_pk>[0-9]+)/$',
         CriterioCompareView.as_view(),
         name="criterion-compare"),
+    url(r'^step-3/criterion-global-weight/(?P<pk>[0-9]+)/$',
+        CriterioGlobalWeightView.as_view(),
+        name="criterion-global-weight"),
 ]

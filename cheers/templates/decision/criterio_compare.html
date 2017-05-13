@@ -174,21 +174,30 @@
           }
         });
 
-        // calculate w, d, e values.
+        // calculate w.
         for (var i = 0; i < $('#table2 tbody > tr').length; i++) {
           var total_w = 0;
-          var total_d = 0;
-          var total_e = 0;
           for (var j = 1; j < $($('#table2 tbody > tr')[i]).find('td').length; j++) {
             var value = parseFloat($($($('#table2 tbody > tr')[i]).find('td')[j]).text());
             total_w += value;
           }
 
           total_w = parseFloat(total_w / $('#table2 tbody > tr').length).toFixed(2);
-
-          html = "<tr><td>" + total_w + "</td><td>" + total_d + "</td><td>" + total_e + "</td></tr>";
+          html = "<tr><td>" + total_w + "</td><td>" + 0 + "</td><td>" + 0 + "</td></tr>";
           $('#table3 > tbody:last-child').append(html);
         }
+
+        // calculate d.
+        for (var i = 0; i < $('#table1 tbody > tr').length; i++) {
+          var total_d = 0;
+          for (var j = 1; j < $($('#table1 tbody > tr')[i]).find('td').length; j++) {
+            var input_value = parseFloat($($($($('#table1 tbody > tr')[i]).find('td')[j]).find('input')).val());
+            var w_value = parseFloat($('#table3 > tbody > tr:eq(' + (j - 1) + ') > td:eq(0)').text());
+            total_d += input_value * w_value;
+          }
+          $('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text(parseFloat(total_d).toFixed(2));
+        }
+
       });
     });
 

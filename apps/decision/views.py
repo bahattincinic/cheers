@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.conf import settings
 
 from criterion.models import Criterion, CriterionScore
 from supplier.models import Supplier
@@ -93,5 +94,8 @@ class CriterioCompareView(LoginRequiredMixin, TemplateView):
 
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
+
+        context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
+            context['criterions'].count())
 
         return context

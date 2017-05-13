@@ -5,6 +5,7 @@ from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView)
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from criterion.models import Criterion
 from .models import Supplier
@@ -22,6 +23,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['child_criterion_count'] = Criterion.objects.filter(
             parent__isnull=False).count()
         context['user_count'] = User.objects.filter(is_active=True).count()
+        context['indicators'] = settings.RATIONALITY_INDICATOR
         return context
 
 

@@ -108,7 +108,7 @@
                   </tr>
                   <tr>
                     <td style="background-color: #efefef; width: 15%">RI</td>
-                    <td>0</td>
+                    <td>{{ random_indicator|safe }}</td>
                   </tr>
                   <tr>
                     <td style="background-color: #efefef; width: 15%">CR</td>
@@ -119,8 +119,8 @@
             </div>
           </div>
 
-          <div class="alert alert-success">
-            Değerler tutarlı. Bir sonraki adıma geçebilirsiniz.
+          <div class="alert alert-success" id="alertText">
+            
           </div>
 
         </div>
@@ -174,7 +174,7 @@
           }
         });
 
-        // calculate w.
+        // calculate W value.
         for (var i = 0; i < $('#table2 tbody > tr').length; i++) {
           var total_w = 0;
           for (var j = 1; j < $($('#table2 tbody > tr')[i]).find('td').length; j++) {
@@ -187,7 +187,7 @@
           $('#table3 > tbody:last-child').append(html);
         }
 
-        // calculate d.
+        // calculate D value.
         for (var i = 0; i < $('#table1 tbody > tr').length; i++) {
           var total_d = 0;
           for (var j = 1; j < $($('#table1 tbody > tr')[i]).find('td').length; j++) {
@@ -195,9 +195,44 @@
             var w_value = parseFloat($('#table3 > tbody > tr:eq(' + (j - 1) + ') > td:eq(0)').text());
             total_d += input_value * w_value;
           }
-          $('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text(parseFloat(total_d).toFixed(2));
+          $('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text(parseFloat(total_d).toFixed(6));
         }
 
+        // calculate E value.
+        for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
+          var w_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(0)').text());
+          var d_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text());
+          var e_value = parseFloat(d_value / w_value).toFixed(6);
+          var w_value = $('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text(e_value);
+        }
+
+        // calculate LAMBDA value.
+        var lambda_value = 0;
+        for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
+          var e_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text());
+          lambda_value += e_value
+        }
+        lambda_value = parseFloat(lambda_value / $('#table3 tbody > tr').length).toFixed(6);
+        $('#table4 > tbody > tr:eq(0) > td:eq(1)').text(lambda_value);
+
+        // calculate CL value.
+        cl_value = (lambda_value - $('#table3 tbody > tr').length) / ($('#table3 tbody > tr').length - 1);
+        $('#table4 > tbody > tr:eq(1) > td:eq(1)').text(parseFloat(cl_value).toFixed(6));
+
+        // Calculate CR value.
+        var cr_value = cl_value / {{ random_indicator|safe }};
+        $('#table4 > tbody > tr:eq(3) > td:eq(1)').text(parseFloat(cr_value).toFixed(6));
+
+        if (cr_value < 0.1) {
+          $('#alertText').text('Değerler TUTARLI. Bir sonraki adıma geçebilirsiniz.');
+          $('#alertText').removeClass('alert-danger');
+          $('#alertText').addClass('alert-success');
+        } else {
+          $('#alertText').text('Değerler TUTARSIZ. Değerleri Yeniden Giriniz.');
+          $('#alertText').removeClass('alert-success');
+          $('#alertText').addClass('alert-danger');
+          $('#btn-save').prop('disabled', true);
+        }
       });
     });
 

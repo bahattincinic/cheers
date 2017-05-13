@@ -58,5 +58,27 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div> 
+
+  <div class="col-xs-12">
+    <legend>Rassallık Göstergesi</legend>
+    <table class="table">
+      <thead>
+        <tr  style="background-color: #efefef;">
+          <th>n</th>
+          {% for key, value in indicators.items %}
+            <th>{{ key }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rassallık Göstergesi</td>
+          {% for key, value in indicators.items %}
+            <th style="font-weight: normal">{{ value }}</th>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
 {% endblock content %}

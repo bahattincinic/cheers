@@ -160,83 +160,128 @@
         $('#btn-save').show();
 
         // calculate the other table.
-        _.forEach($('#table1 tbody > tr > td'), function(column){
-          if ($(column).find('input').length > 0) {
-            var value = parseFloat($(column).find('input').val()) || 0;
-            var cellIndex = $(column).index();
-            var rowIndex = $(column).parent().index();
-            var total = parseFloat($('#table1 tfoot  > tr:eq(0) > td:eq(' + cellIndex + ') ').text()) || 0;
-            var calculateTotal = parseFloat(value / parseFloat(total)).toFixed(2);
-            if (calculateTotal === 'Infinity' || calculateTotal === 'NaN') {
-              calculateTotal = 0;
-            }
-            $('#table2 tbody > tr:eq(' + rowIndex + ') > td:eq(' +  cellIndex + ')').text(calculateTotal);
-          }
-        });
+        calculateNormalizedTable();
 
         // calculate W value.
-        for (var i = 0; i < $('#table2 tbody > tr').length; i++) {
-          var total_w = 0;
-          for (var j = 1; j < $($('#table2 tbody > tr')[i]).find('td').length; j++) {
-            var value = parseFloat($($($('#table2 tbody > tr')[i]).find('td')[j]).text());
-            total_w += value;
-          }
-
-          total_w = parseFloat(total_w / $('#table2 tbody > tr').length).toFixed(2);
-          html = "<tr><td>" + total_w + "</td><td>" + 0 + "</td><td>" + 0 + "</td></tr>";
-          $('#table3 > tbody:last-child').append(html);
-        }
+        calculateWValue();
 
         // calculate D value.
-        for (var i = 0; i < $('#table1 tbody > tr').length; i++) {
-          var total_d = 0;
-          for (var j = 1; j < $($('#table1 tbody > tr')[i]).find('td').length; j++) {
-            var input_value = parseFloat($($($($('#table1 tbody > tr')[i]).find('td')[j]).find('input')).val());
-            var w_value = parseFloat($('#table3 > tbody > tr:eq(' + (j - 1) + ') > td:eq(0)').text());
-            total_d += input_value * w_value;
-          }
-          $('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text(parseFloat(total_d).toFixed(6));
-        }
+        calculateDValue();
 
         // calculate E value.
-        for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
-          var w_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(0)').text());
-          var d_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text());
-          var e_value = parseFloat(d_value / w_value).toFixed(6);
-          if (e_value !== 'NaN') {
-            $('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text(e_value);
-          }
-        }
+        calculateEValue();
+        
 
         // calculate LAMBDA value.
-        var lambda_value = 0;
-        for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
-          var e_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text());
-          lambda_value += e_value
-        }
-        lambda_value = parseFloat(lambda_value / $('#table3 tbody > tr').length).toFixed(6);
-        $('#table4 > tbody > tr:eq(0) > td:eq(1)').text(lambda_value);
+        var lambda_value = calculateLambdaValue();
 
         // calculate CL value.
-        cl_value = (lambda_value - $('#table3 tbody > tr').length) / ($('#table3 tbody > tr').length - 1);
-        $('#table4 > tbody > tr:eq(1) > td:eq(1)').text(parseFloat(cl_value).toFixed(6));
+        var cl_value = calculateClValue(lambda_value);
 
         // Calculate CR value.
-        var cr_value = cl_value / {{ random_indicator|safe }};
-        $('#table4 > tbody > tr:eq(3) > td:eq(1)').text(parseFloat(cr_value).toFixed(6));
+        calculateCrValue(cl_value);
 
-        if (cr_value < 0.1 && cr_value > 0) {
-          $('#alertText').text('Değerler TUTARLI. Bir sonraki adıma geçebilirsiniz.');
-          $('#alertText').removeClass('alert-danger');
-          $('#alertText').addClass('alert-success');
-        } else {
-          $('#alertText').text('Değerler TUTARSIZ. Değerleri Yeniden Giriniz.');
-          $('#alertText').removeClass('alert-success');
-          $('#alertText').addClass('alert-danger');
-          $('#btn-save').prop('disabled', true);
-        }
+        // check ratio
+        checkCalculation();
       });
     });
+
+
+    function calculateCrValue(cl_value) {
+      var cr_value = cl_value / {{ random_indicator|safe }};
+      $('#table4 > tbody > tr:eq(3) > td:eq(1)').text(parseFloat(cr_value).toFixed(6));
+    }
+
+
+    function calculateClValue(lambda_value) {
+      cl_value = (lambda_value - $('#table3 tbody > tr').length) / ($('#table3 tbody > tr').length - 1);
+      $('#table4 > tbody > tr:eq(1) > td:eq(1)').text(parseFloat(cl_value).toFixed(6));
+      return cl_value;
+    }
+
+
+    function calculateLambdaValue() {
+      var lambda_value = 0;
+      for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
+        var e_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text());
+        lambda_value += e_value
+      }
+      lambda_value = parseFloat(lambda_value / $('#table3 tbody > tr').length).toFixed(6);
+      $('#table4 > tbody > tr:eq(0) > td:eq(1)').text(lambda_value);
+      return lambda_value;
+    }
+
+
+    function calculateEValue() {
+      for (var i = 0; i < $('#table3 tbody > tr').length; i++) {
+        var w_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(0)').text());
+        var d_value = parseFloat($('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text());
+        var e_value = parseFloat(d_value / w_value).toFixed(6);
+        if (e_value !== 'NaN') {
+          $('#table3 > tbody > tr:eq(' + i + ') > td:eq(2)').text(e_value);
+        }
+      }
+    }
+
+
+    function calculateDValue() {
+      for (var i = 0; i < $('#table1 tbody > tr').length; i++) {
+        var total_d = 0;
+        for (var j = 1; j < $($('#table1 tbody > tr')[i]).find('td').length; j++) {
+          var input_value = parseFloat($($($($('#table1 tbody > tr')[i]).find('td')[j]).find('input')).val());
+          var w_value = parseFloat($('#table3 > tbody > tr:eq(' + (j - 1) + ') > td:eq(0)').text());
+          total_d += input_value * w_value;
+        }
+        $('#table3 > tbody > tr:eq(' + i + ') > td:eq(1)').text(parseFloat(total_d).toFixed(6));
+      }
+    }
+
+
+    function calculateWValue() {
+      for (var i = 0; i < $('#table2 tbody > tr').length; i++) {
+        var total_w = 0;
+        for (var j = 1; j < $($('#table2 tbody > tr')[i]).find('td').length; j++) {
+          var value = parseFloat($($($('#table2 tbody > tr')[i]).find('td')[j]).text());
+          total_w += value;
+        }
+
+        total_w = parseFloat(total_w / $('#table2 tbody > tr').length).toFixed(2);
+        html = "<tr><td>" + total_w + "</td><td>" + 0 + "</td><td>" + 0 + "</td></tr>";
+        $('#table3 > tbody:last-child').append(html);
+      }
+    }
+
+    function calculateNormalizedTable() {
+      _.forEach($('#table1 tbody > tr > td'), function(column){
+        if ($(column).find('input').length > 0) {
+          var value = parseFloat($(column).find('input').val()) || 0;
+          var cellIndex = $(column).index();
+          var rowIndex = $(column).parent().index();
+          var total = parseFloat($('#table1 tfoot  > tr:eq(0) > td:eq(' + cellIndex + ') ').text()) || 0;
+          var calculateTotal = parseFloat(value / parseFloat(total)).toFixed(2);
+          if (calculateTotal === 'Infinity' || calculateTotal === 'NaN') {
+            calculateTotal = 0;
+          }
+          $('#table2 tbody > tr:eq(' + rowIndex + ') > td:eq(' +  cellIndex + ')').text(calculateTotal);
+        }
+      });
+    }
+
+
+    function checkCalculation() {
+      var cr_value = $('#table4 > tbody > tr:eq(3) > td:eq(1)').text();
+      if (cr_value < 0.1 && cr_value > 0) {
+        $('#alertText').text('Değerler TUTARLI. Bir sonraki adıma geçebilirsiniz.');
+        $('#alertText').removeClass('alert-danger');
+        $('#alertText').addClass('alert-success');
+      } else {
+        $('#alertText').text('Değerler TUTARSIZ. Değerleri Yeniden Giriniz.');
+        $('#alertText').removeClass('alert-success');
+        $('#alertText').addClass('alert-danger');
+        $('#btn-save').prop('disabled', true);
+      }
+    }
+
 
     function calculateTotal() {
       var total = {};

@@ -45,7 +45,7 @@
         {% csrf_token %}
         <table class="table" style="margin-top: 20px;" id="table1">
           <thead>
-            <tr>
+            <tr style="background-color: #efefef;">
               <th>Kriterler</th>
               {% for criterion in criterions %}
                 <th>{{ criterion.name }}</th>
@@ -65,7 +65,7 @@
                       {% if forloop.counter == forloop.parentloop.counter or forloop.counter < forloop.parentloop.counter %}
                         disabled style="color: #2f4154;"
                       {% endif %}
-                      value="{% if forloop.counter == forloop.parentloop.counter %}1.0{% endif %}"
+                      value="{% if forloop.counter == forloop.parentloop.counter %}1.0{% else %}0{% endif %}"
                     />
                   </td>
                 {% endfor %}
@@ -88,7 +88,7 @@
 
           <table class="table" style="margin-top: 10px;" id="table2">
             <thead>
-              <tr>
+              <tr style="background-color: #efefef;">
                 <th>Kriterler</th>
                 {% for criterion in criterions %}
                   <th>{{ criterion.name }}</th>
@@ -108,6 +108,47 @@
               {% endfor %}
             </tbody>
           </table>
+
+          <legend>Kriterlerin Kendi Arasinda Kıyasının Tutarlılık Kontrolü</legend>
+
+          <div class="container" style="padding-left: 0px; padding-right: 31px;">
+            <div class="col-md-6"  style="padding-left: 0px;">
+              <table class="table" id="table3">
+                <thead>
+                  <tr style="background-color: #efefef;">
+                    <th>W</th>
+                    <th>D</th>
+                    <th>E</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table class="table" id="table4">
+                <tbody>
+                  <tr>
+                    <td style="background-color: #efefef; width: 15%">&lambda;</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td style="background-color: #efefef; width: 15%">CL</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td style="background-color: #efefef; width: 15%">RI</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td style="background-color: #efefef; width: 15%">CR</td>
+                    <td>0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
      </form>
 
@@ -134,8 +175,8 @@
           $(input).val( parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toFixed(2) );
           calculateTotal();
         } else {
-         $(this).val('');
-         $(input).val('');
+         $(this).val('0');
+         $(input).val('0');
         }
       });
 
@@ -143,18 +184,36 @@
         $('#hidden--table').show();
         $('#showTable').hide();
         $('#btn-save').show();
+
+        // calculate the other table.
         _.forEach($('#table1 tbody > tr > td'), function(column){
           if ($(column).find('input').length > 0) {
-            var value = $(column).find('input').val();
+            var value = parseFloat($(column).find('input').val()) || 0;
             var cellIndex = $(column).index();
             var rowIndex = $(column).parent().index();
-            var total = parseFloat($('#table1 tfoot  > tr:eq(0) > td:eq(' + cellIndex + ') ').text());
-            var calculateTotal = parseFloat(parseFloat(value) / parseFloat(total)).toFixed(2);
+            var total = parseFloat($('#table1 tfoot  > tr:eq(0) > td:eq(' + cellIndex + ') ').text()) || 0;
+            var calculateTotal = parseFloat(value / parseFloat(total)).toFixed(2);
+            if (calculateTotal === 'Infinity' || calculateTotal === 'NaN') {
+              calculateTotal = 0;
+            }
             $('#table2 tbody > tr:eq(' + rowIndex + ') > td:eq(' +  cellIndex + ')').text(calculateTotal);
           }
         });
-      });
 
+        // calculate w, d, e values.
+        for (var i = 0; i < $('#table2 tbody > tr').length; i++) {
+          var total_w = 0;
+          var total_d = 0;
+          var total_e = 0;
+          for (var j = 1; j < $($('#table2 tbody > tr')[i]).find('td').length; j++) {
+            var value = parseFloat($($($('#table2 tbody > tr')[i]).find('td')[j]).text());
+            total_w += value;
+          }
+          total_w = parseFloat(total_w / $('#table2 tbody > tr').length).toFixed(2);
+          html = "<tr><td>" + total_w + "</td><td>" + total_d + "</td><td>" + total_e + "</td></tr>";
+          $('#table3 > tbody:last-child').append(html);
+        }
+      });
     });
 
     function calculateTotal() {

@@ -5,38 +5,8 @@
 
 {% block content %}
  <div class="container">
-   <div class="row bs-wizard" style="border-bottom:0; margin-left: 1px; margin-right: 60px;">
-       <div class="col-xs-3 bs-wizard-step complete">
-         <div class="text-center bs-wizard-stepnum">Adım 1</div>
-         <div class="progress"><div class="progress-bar"></div></div>
-         <a href="#" class="bs-wizard-dot"></a>
-         <div class="bs-wizard-info text-center">Kriterlerin Puanlamaları</div>
-       </div>
-       
-       <div class="col-xs-3 bs-wizard-step complete"><!-- complete -->
-         <div class="text-center bs-wizard-stepnum">Adım 2</div>
-         <div class="progress"><div class="progress-bar"></div></div>
-         <a href="#" class="bs-wizard-dot"></a>
-         <div class="bs-wizard-info text-center">Verilerin Puanlaması ve Kısırlarla Ağırlaklandırması</div>
-       </div>
-       
-       <div class="col-xs-3 bs-wizard-step complete">
-         <div class="text-center bs-wizard-stepnum">Adım 3</div>
-         <div class="progress"><div class="progress-bar"></div></div>
-         <a href="#" class="bs-wizard-dot"></a>
-         <div class="bs-wizard-info text-center">Kriter Kıyaslamaları</div>
-       </div>
-       
-       <div class="col-xs-3 bs-wizard-step disabled"><!-- active -->
-         <div class="text-center bs-wizard-stepnum">Adım 4</div>
-         <div class="progress"><div class="progress-bar"></div></div>
-         <a href="#" class="bs-wizard-dot"></a>
-         <div class="bs-wizard-info text-center">Sonuç</div>
-       </div>
-   </div>  
-  </div>
- </div>
- 
+  {% include "partial/progress_bar.html" with step=3 %}
+</div> 
 
  <div class="container">
   <div style="margin-left: 20px; margin-top: 30px;">
@@ -149,6 +119,10 @@
             </div>
           </div>
 
+          <div class="alert alert-success">
+            Değerler tutarlı. Bir sonraki adıma geçebilirsiniz.
+          </div>
+
         </div>
      </form>
 
@@ -209,7 +183,9 @@
             var value = parseFloat($($($('#table2 tbody > tr')[i]).find('td')[j]).text());
             total_w += value;
           }
+
           total_w = parseFloat(total_w / $('#table2 tbody > tr').length).toFixed(2);
+
           html = "<tr><td>" + total_w + "</td><td>" + total_d + "</td><td>" + total_e + "</td></tr>";
           $('#table3 > tbody:last-child').append(html);
         }

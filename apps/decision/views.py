@@ -37,6 +37,10 @@ class CreateAhpView(LoginRequiredMixin, View):
             }
             for criterion in Criterion.objects.all()
         }
+        report.suppliers = {
+            supplier.id: supplier.name
+            for supplier in Supplier.objects.all()
+        }
         report.save()
         return HttpResponseRedirect(
             reverse('criterion-score', args=[report.id]))

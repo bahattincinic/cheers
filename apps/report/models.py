@@ -8,6 +8,7 @@ class Report(models.Model):
     criterion_compare = JSONField()
 
     criterions = JSONField()
+    suppliers = JSONField()
 
     is_completed = models.BooleanField(default=False)
 

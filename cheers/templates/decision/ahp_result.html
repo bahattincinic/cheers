@@ -1,8 +1,123 @@
 {% extends "base_site.html" %}
-{% load static %}
+
+{% load jsonify %}
+
+{% block title %} - Adım 3{% endblock title %}
+
 
 {% block content %}
  <div class="container">
-   {% include "partial/progress_bar.html" with step=5 %}
+  {% include "partial/progress_bar.html" with step=5 %}
+  </div> 
+
+  <div class="container" style="margin-top: 20px; margin-left: -63px;">
+    <table class="table big--table">
+      <thead>
+        <tr>
+          <th></th>
+          {% for criterio in child_criterions %}
+            <th>{{ criterio.name }}</th>
+          {% endfor %}
+          <th>Tedarikçi Puanları</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wi</td>
+          {% for child in child_criterions %}
+            <td>-</td>
+          {% endfor %}
+        </tr>
+        {% for supplier in suppliers %}
+          <tr>
+            <td>{{ supplier.name }}</td>
+            {% for child in child_criterions %}
+              <td>-</td>
+            {% endfor %}
+            <td>-</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+ <div class="container">
+  <div id="container" style="min-width: 300px; height: 400px; margin: 0 auto; margin-top: 30px"></div>
  </div>
 {% endblock content %}
+
+{% block footer %}
+  {% include "partial/importance_scale.html" %}
+  <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+  <script type="text/javascript">
+    var data = {
+      id: {{ report.id|jsonify }},
+      criterion_priority: {{ report.criterion_priority|jsonify|safe }},
+      criterion_supplier_score: {{ report.criterion_supplier_score|jsonify|safe }},
+      criterion_compare: {{ report.criterion_compare|jsonify|safe }},
+      supplier_compare: {{ report.supplier_compare|jsonify|safe }}
+    };
+
+    $(function() {
+      Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'AHP Analizi Sonucu Elde Edilen Tedaikçi Puan Grafiği'
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        plotOptions: {
+            column: {
+                color: '#2f4154'
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Tedarikçi Puanları'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '{point.y:.1f}'
+        },
+        series: [{
+            name: 'Population',
+            data: [
+                {% for supplier in suppliers %}
+                  ['{{ supplier.name }}', 3.7 * {{ supplier.id }}],
+                {% endfor %}
+            ],
+            dataLabels: {
+                enabled: true,
+                rotation: -90,
+                color: '#FFFFFF',
+                align: 'right',
+                format: '{point.y:.1f}', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        }]
+      });
+    });
+  </script>
+{% endblock footer %}
+
+{% block head %}
+  <link href="https://code.highcharts.com/css/highcharts.css" rel="stylesheet">  
+{% endblock head %}

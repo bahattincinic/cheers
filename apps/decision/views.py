@@ -255,4 +255,6 @@ class AhpResultView(BaseStepView):
         context = super(AhpResultView, self).get_context_data(
             **kwargs)
         context['report'] = self.get_object()
+        context['child_criterions'] = self.get_child_criterions()
+        context['suppliers'] = Supplier.objects.all()
         return context

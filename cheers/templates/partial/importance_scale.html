@@ -1,0 +1,36 @@
+<div class="help-button">
+  <i class="glyphicon glyphicon-exclamation-sign"></i>
+</div>
+
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalLabel">Önem Skalası</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item help-text"><a href="#">1 - Eşit Önem</a></li>
+          <li class="list-group-item help-text"><a href="#">3 - Birinci faktör ikinci faktörden daha önemli</a></li>
+          <li class="list-group-item help-text"><a href="#">5- Birinci faktör ikinci faktörden çok önemli</a></li>
+          <li class="list-group-item help-text"><a href="#">7 - Birinci faktör ikinci faktöre nazaran çok daha önemli</a></li>
+          <li class="list-group-item help-text"><a href="#">9 - Birinci faktör ikinci faktöre nazaran mutlak üstün önemli</a></li>
+          <li class="list-group-item help-text"><a href="#">2,4,6,8 - Ara değerler</a></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-inverse" data-dismiss="modal">Kapat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $('.help-button').click(function(){
+      $('#helpModal').modal('show');
+    });
+  });
+</script>

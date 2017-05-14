@@ -11,14 +11,15 @@
   </div> 
 
   <div class="container" style="margin-top: 20px; margin-left: -63px;">
+    <legend style="text-align: center">AHP Analiz Sonuçları</legend>
     <table class="table big--table">
       <thead>
         <tr>
           <th></th>
           {% for criterio in child_criterions %}
-            <th>{{ criterio.name }}</th>
+            <th style="background-color: #efefef;">{{ criterio.name }}</th>
           {% endfor %}
-          <th>Tedarikçi Puanları</th>
+          <th style="background-color: #efefef;">Tedarikçi Puanları</th>
         </tr>
       </thead>
       <tbody>
@@ -27,14 +28,15 @@
           {% for child in child_criterions %}
             <td>-</td>
           {% endfor %}
+          <td style="background-color: #efefef;">-</td>
         </tr>
         {% for supplier in suppliers %}
           <tr>
-            <td>{{ supplier.name }}</td>
+            <td style="font-weight: bold">{{ supplier.name }}</td>
             {% for child in child_criterions %}
               <td>-</td>
             {% endfor %}
-            <td>-</td>
+            <td style="background-color: #efefef;">-</td>
           </tr>
         {% endfor %}
       </tbody>

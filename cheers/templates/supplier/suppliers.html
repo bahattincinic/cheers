@@ -38,6 +38,16 @@
               </td>
             </tr>
           {% endfor %}
+          {% if object_list.count == 0 %}
+            <tr>
+              <td colspan="2" style="text-align: center;">
+                <div style="margin-top: 20px">
+                  <i class="glyphicon glyphicon-stats"></i> <br>
+                  Gösterilecek Tedarikçi Yok.
+                </div>
+              </td>
+            </tr>
+          {% endif %}
           </tbody>
         </table>
 

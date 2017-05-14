@@ -30,6 +30,7 @@ class CreateAhpView(LoginRequiredMixin, View):
         report.criterion_priority = {}
         report.criterion_supplier_score = []
         report.criterion_compare = {}
+        report.supplier_compare = {}
         report.criterions = {
             criterion.id: {
                 'name': criterion.name,
@@ -46,7 +47,17 @@ class CreateAhpView(LoginRequiredMixin, View):
             reverse('criterion-score', args=[report.id]))
 
 
-class CriterioScoreView(LoginRequiredMixin, TemplateView):
+class BaseStepView(LoginRequiredMixin, TemplateView):
+
+    def get_object(self):
+        return get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False
+        )
+
+
+class CriterioScoreView(BaseStepView):
     """
     AHP Step-1
     """
@@ -57,18 +68,11 @@ class CriterioScoreView(LoginRequiredMixin, TemplateView):
             **kwargs)
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
-        context['report'] = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False)
+        context['report'] = self.get_object()
         return context
 
     def post(self, request, *args, **kwargs):
-        report = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False
-        )
+        report = self.get_object()
         report.criterion_priority = {}
 
         for key, value in request.POST.items():
@@ -81,7 +85,7 @@ class CriterioScoreView(LoginRequiredMixin, TemplateView):
             reverse('criterion-weight', args=[report.id]))
 
 
-class CriterioWeightView(LoginRequiredMixin, TemplateView):
+class CriterioWeightView(BaseStepView):
     """
     AHP Step-2
     """
@@ -94,18 +98,11 @@ class CriterioWeightView(LoginRequiredMixin, TemplateView):
         context['suppliers'] = Supplier.objects.all()
         context['criterions'] = Criterion.objects.filter(
             parent__isnull=True)
-        context['report'] = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False)
+        context['report'] = self.get_object()
         return context
 
     def post(self, request, *args, **kwargs):
-        report = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False
-        )
+        report = self.get_object()
         report.criterion_supplier_score = []
 
         for key, value in request.POST.items():
@@ -121,7 +118,7 @@ class CriterioWeightView(LoginRequiredMixin, TemplateView):
             reverse('criterion-compare', args=[report.id, 0]))
 
 
-class CriterioGlobalWeightView(LoginRequiredMixin, TemplateView):
+class CriterioGlobalWeightView(BaseStepView):
     """
     AHP Step-3
     """
@@ -131,17 +128,18 @@ class CriterioGlobalWeightView(LoginRequiredMixin, TemplateView):
         context = super(CriterioGlobalWeightView, self).get_context_data(
             **kwargs)
 
-        context['suppliers'] = Supplier.objects.all()
-        context['criterions'] = Criterion.objects.filter(
+        criterions = Criterion.objects.filter(
             parent__isnull=False)
-        context['report'] = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False)
+        report = self.get_object()
+        context['suppliers'] = Supplier.objects.all()
+        context['criterions'] = criterions
+        context['report'] = report
+        context['next_url'] = reverse('supplier-compare',
+                                      args=[report.id, criterions.first().id])
         return context
 
 
-class CriterioCompareView(LoginRequiredMixin, TemplateView):
+class CriterioCompareView(BaseStepView):
     """
     AHP Step-3
     """
@@ -160,25 +158,20 @@ class CriterioCompareView(LoginRequiredMixin, TemplateView):
             parent = get_object_or_404(Criterion, pk=parent_pk)
             queryset = queryset.filter(parent=parent)
 
-        context['criterions'] = queryset
+        context['object_list'] = queryset
         context['parent'] = parent
+        context['step'] = 3
+        context['page_type'] = 'criterio'
 
-        context['report'] = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False)
+        context['report'] = self.get_object()
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
-            context['criterions'].count())
+            context['object_list'].count())
 
         return context
 
     def post(self, request, *args, **kwargs):
-        report = get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False
-        )
+        report = self.get_object()
 
         parent_pk = int(self.kwargs['parent_pk'])
         if parent_pk != 0:
@@ -203,3 +196,61 @@ class CriterioCompareView(LoginRequiredMixin, TemplateView):
 
         return HttpResponseRedirect(
             reverse('criterion-global-weight', args=[report.id]))
+
+
+class SupplierCompareView(BaseStepView):
+    """
+    AHP Step-4
+    """
+    template_name = "decision/criterio_compare.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplierCompareView, self).get_context_data(
+            **kwargs)
+
+        context['object_list'] = Supplier.objects.all()
+        context['page_type'] = 'supplier'
+        context['step'] = 4
+        context['parent'] = get_object_or_404(
+            Criterion, pk=self.kwargs['criterion_pk'])
+
+        context['report'] = self.get_object()
+
+        context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
+            context['object_list'].count())
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        report = self.get_object()
+        criterion = get_object_or_404(
+            Criterion, pk=self.kwargs['criterion_pk'])
+
+        report.supplier_compare[criterion.id] = json.loads(
+            request.POST['data'])
+        report.save()
+
+        missins_criterion = Criterion.objects.filter(
+            parent__isnull=False).exclude(
+            id__in=report.supplier_compare.keys()).first()
+
+        if missins_criterion:
+            return HttpResponseRedirect(
+                reverse('supplier-compare',
+                        args=[report.id, missins_criterion.id]))
+
+        return HttpResponseRedirect(
+            reverse('ahp-result', args=[report.id]))
+
+
+class AhpResultView(BaseStepView):
+    """
+    AHP Step-4
+    """
+    template_name = "decision/ahp_result.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AhpResultView, self).get_context_data(
+            **kwargs)
+        context['report'] = self.get_object()
+        return context

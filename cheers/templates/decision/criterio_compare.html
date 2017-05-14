@@ -5,16 +5,22 @@
 
 {% block content %}
  <div class="container">
-  {% include "partial/progress_bar.html" with step=3 %}
+  {% include "partial/progress_bar.html" with step=step %}
 </div> 
 
  <div class="container">
   <div style="margin-left: 20px; margin-top: 30px;">
 
-    {% if parent %}
-      <legend>{{ parent.name }} Kriterinin Alt Kriterlerinin Kendi Aralarında Kıyası</legend>
-    {% else %}
-      <legend>Ana Kriterlerin Kendi Aralarında Kıyası</legend>
+    {% if page_type == "criterio" %}
+      {% if parent %}
+        <legend>{{ parent.name }} Kriterinin Alt Kriterlerinin Kendi Aralarında Kıyası</legend>
+      {% else %}
+        <legend>Ana Kriterlerin Kendi Aralarında Kıyası</legend>
+      {% endif %}
+    {% endif %}
+
+    {% if page_type == "supplier" %}
+      <legend>{{ parent.name }} Kriterine Göre Tedarikçi Kıyası</legend>
     {% endif %}
 
      <form method="post">
@@ -23,16 +29,16 @@
           <thead>
             <tr style="background-color: #efefef;">
               <th data-id="0">Kriterler</th>
-              {% for criterion in criterions %}
-                <th data-id="{{ criterion.id }}">{{ criterion.name }}</th>
+              {% for object in object_list %}
+                <th data-id="{{ object.id }}">{{ object.name }}</th>
               {% endfor %}
             </tr>
           </thead>
           <tbody>
-            {% for criterion in criterions %}
+            {% for object in object_list %}
               <tr>
-                <td data-id="{{ criterion.id }}">{{ criterion.name }}</td>
-                {% for child in criterions %}
+                <td data-id="{{ object.id }}">{{ object.name }}</td>
+                {% for child in object_list %}
                   <td>
                     <input
                       type="text"
@@ -51,7 +57,7 @@
             <tfoot>
               <tr style="background-color: #efefef;">
                 <td>Sütun Toplamları</td>
-                {% for child in criterions %}
+                {% for child in object_list %}
                 <td>0</td>
                 {% endfor %}
               </tr>
@@ -60,22 +66,28 @@
 
 
         <div id="hidden--table" style="display: none; margin-top: 30px;">
-          <legend>Normalize Edilmiş Kriterlerin Kendi Aralarında Kıyası</legend>
+          {% if page_type == "criterio" %}
+            <legend>Normalize Edilmiş Kriterlerin Kendi Aralarında Kıyası</legend>
+          {% endif %}
+
+          {% if page_type == "supplier" %}
+            <legend>Normalize {{ parent.name }} Kriterine Göre Tedarikçi Kıyası</legend>
+          {% endif %}
 
           <table class="table" style="margin-top: 10px;" id="table2">
             <thead>
               <tr style="background-color: #efefef;">
                 <th data-id="0">Kriterler</th>
-                {% for criterion in criterions %}
-                  <th data-id="{{ criterion.id }}">{{ criterion.name }}</th>
+                {% for object in object_list %}
+                  <th data-id="{{ object.id }}">{{ object.name }}</th>
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
-              {% for criterion in criterions %}
+              {% for object in object_list %}
                 <tr>
-                  <td data-id="{{ criterion.id }}">{{ criterion.name }}</td>
-                  {% for child in criterions %}
+                  <td data-id="{{ object.id }}">{{ object.name }}</td>
+                  {% for child in object_list %}
                     <td>
                       0
                     </td>
@@ -85,7 +97,13 @@
             </tbody>
           </table>
 
-          <legend>Kriterlerin Kendi Arasinda Kıyasının Tutarlılık Kontrolü</legend>
+          {% if page_type == "criterio" %}
+            <legend>Kriterlerin Kendi Arasinda Kıyasının Tutarlılık Kontrolü</legend>
+          {% endif %}
+
+          {% if page_type == "supplier" %}
+            <legend>{{ parent.name }} Kriterine Göre Tedarikçi Kıyasının Tutarlılık Kontrolü</legend>
+          {% endif %}
 
           <div class="container" style="padding-left: 0px; padding-right: 31px;">
             <div class="col-md-6"  style="padding-left: 0px;">

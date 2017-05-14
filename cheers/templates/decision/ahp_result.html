@@ -1,0 +1,8 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block content %}
+ <div class="container">
+   {% include "partial/progress_bar.html" with step=5 %}
+ </div>
+{% endblock content %}

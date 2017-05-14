@@ -179,8 +179,15 @@ class CriterioCompareView(BaseStepView):
         if parent_pk != 0:
             get_object_or_404(Criterion, pk=parent_pk)
 
-        report.criterion_compare[parent_pk] = json.loads(request.POST['data'])
-        report.save()
+        try:
+            report.criterion_compare[parent_pk] = json.loads(
+                request.POST['data'])
+            report.save()
+        except (ValueError, TypeError):
+            # Invalid JSON yielded
+            return HttpResponseRedirect(
+                reverse('criterion-compare',
+                        args=[report.id, parent_pk]))
 
         missins_criterion = Criterion.objects.filter(
             parent__isnull=True).exclude(
@@ -228,9 +235,15 @@ class SupplierCompareView(BaseStepView):
         criterion = get_object_or_404(
             Criterion, pk=self.kwargs['criterion_pk'])
 
-        report.supplier_compare[criterion.id] = json.loads(
-            request.POST['data'])
-        report.save()
+        try:
+            report.supplier_compare[criterion.id] = json.loads(
+                request.POST['data'])
+            report.save()
+        except (ValueError, TypeError):
+            # Invalid JSON yielded
+            return HttpResponseRedirect(
+                reverse('supplier-compare',
+                        args=[report.id, criterion.id]))
 
         missins_criterion = Criterion.objects.filter(
             parent__isnull=False).exclude(

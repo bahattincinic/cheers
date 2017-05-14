@@ -12,13 +12,29 @@ from supplier.models import Supplier
 from report.models import Report
 
 
-class CriterionHierarchyView(LoginRequiredMixin, TemplateView):
+class BaseStepView(LoginRequiredMixin, TemplateView):
+
+    def get_object(self):
+        return get_object_or_404(
+            Report, id=self.kwargs['pk'],
+            created_by=self.request.user,
+            is_completed=False
+        )
+
+    def get_parent_criterions(self):
+        return Criterion.objects.filter(parent__isnull=True)
+
+    def get_child_criterions(self):
+        return Criterion.objects.filter(parent__isnull=False)
+
+
+class CriterionHierarchyView(BaseStepView):
     template_name = 'decision/criterion_hierarchy.html'
 
     def get_context_data(self, **kwargs):
         context = super(CriterionHierarchyView, self).get_context_data(
             **kwargs)
-        context['criterions'] = Criterion.objects.filter(parent__isnull=True)
+        context['criterions'] = self.get_parent_criterions()
         return context
 
 
@@ -47,16 +63,6 @@ class CreateAhpView(LoginRequiredMixin, View):
             reverse('criterion-score', args=[report.id]))
 
 
-class BaseStepView(LoginRequiredMixin, TemplateView):
-
-    def get_object(self):
-        return get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False
-        )
-
-
 class CriterioScoreView(BaseStepView):
     """
     AHP Step-1
@@ -66,8 +72,7 @@ class CriterioScoreView(BaseStepView):
     def get_context_data(self, **kwargs):
         context = super(CriterioScoreView, self).get_context_data(
             **kwargs)
-        context['criterions'] = Criterion.objects.filter(
-            parent__isnull=True)
+        context['criterions'] = self.get_parent_criterions()
         context['report'] = self.get_object()
         return context
 
@@ -96,8 +101,7 @@ class CriterioWeightView(BaseStepView):
             **kwargs)
 
         context['suppliers'] = Supplier.objects.all()
-        context['criterions'] = Criterion.objects.filter(
-            parent__isnull=True)
+        context['criterions'] = self.get_parent_criterions()
         context['report'] = self.get_object()
         return context
 
@@ -128,8 +132,7 @@ class CriterioGlobalWeightView(BaseStepView):
         context = super(CriterioGlobalWeightView, self).get_context_data(
             **kwargs)
 
-        criterions = Criterion.objects.filter(
-            parent__isnull=False)
+        criterions = self.get_child_criterions()
         report = self.get_object()
         context['suppliers'] = Supplier.objects.all()
         context['criterions'] = criterions
@@ -149,14 +152,13 @@ class CriterioCompareView(BaseStepView):
         context = super(CriterioCompareView, self).get_context_data(
             **kwargs)
 
-        queryset = Criterion.objects.all()
         parent_pk = int(self.kwargs['parent_pk'])
         if parent_pk == 0:
-            queryset = queryset.filter(parent__isnull=True)
+            queryset = self.get_parent_criterions()
             parent = None
         else:
             parent = get_object_or_404(Criterion, pk=parent_pk)
-            queryset = queryset.filter(parent=parent)
+            queryset = Criterion.objects.filter(parent=parent)
 
         context['object_list'] = queryset
         context['parent'] = parent
@@ -245,7 +247,7 @@ class SupplierCompareView(BaseStepView):
 
 class AhpResultView(BaseStepView):
     """
-    AHP Step-4
+    AHP Step-5
     """
     template_name = "decision/ahp_result.html"
 

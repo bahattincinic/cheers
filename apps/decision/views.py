@@ -41,24 +41,7 @@ class CriterionHierarchyView(BaseStepView):
 class CreateAhpView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        report = Report()
-        report.created_by = request.user
-        report.criterion_priority = {}
-        report.criterion_supplier_score = []
-        report.criterion_compare = {}
-        report.supplier_compare = {}
-        report.criterions = {
-            criterion.id: {
-                'name': criterion.name,
-                'parent': criterion.parent_id
-            }
-            for criterion in Criterion.objects.all()
-        }
-        report.suppliers = {
-            supplier.id: supplier.name
-            for supplier in Supplier.objects.all()
-        }
-        report.save()
+        report = Report.create_report(request.user)
         return HttpResponseRedirect(
             reverse('criterion-score', args=[report.id]))
 

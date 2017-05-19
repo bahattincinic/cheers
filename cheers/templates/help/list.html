@@ -1,0 +1,43 @@
+{% extends "base_site.html" %}
+
+{% block title %} - Yardım{% endblock title %}
+
+{% block content %}
+  <div class="container">
+
+    <div style="margin-right: 30px">
+      {% for item in object_list %}
+        {% if forloop.first %}
+          <div class="row">
+        {% endif %}
+        <div class="col-md-4">
+          <div class="service-box has-bg">
+            <h3 class="service-title">
+              <a href="{% url 'topic-detail' item.id %}">
+                {{ item.title }}
+              </a>
+            </h3>
+            <div class="service-desc">
+              <p>
+                {{ item.summary|truncatechars:100 }}...
+              </p>
+            </div>
+          </div>
+        </div>
+        {% if forloop.counter|divisibleby:"3" %}
+          </div>
+          {% if not forloop.last %}
+            <div class="row">
+          {% endif %}
+        {% endif %}
+        {% if forloop.last %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="text-center">
+      {% include "partial/paginate.html" %}
+    </div>
+  </div>
+{% endblock content %}

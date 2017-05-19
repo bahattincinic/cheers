@@ -4,40 +4,39 @@
 
 {% block content %}
   <div class="col-xs-12">
-      <table class="table">
-        <thead>
-          <th>Rapor Numarası</th>
-          <th>Alınma Tarihi</th>
-          <th>İşlem</th>
-        </thead>
-        <tbody>
-        {% for report in object_list %}
-          <tr>
-            <td>#{{ report.id }}</td>
-            <td>{{ report.created_at }}</td>
-            <td>
-              <a href="{% url 'report-detail' report.id %}" class="btn btn-inverse">
-                Detay
-              </a>
-            </td>
-          </tr>
-        {% endfor %}
-        {% if object_list.count == 0 %}
-          <tr>
-            <td colspan="3" style="text-align: center;">
-              <div style="margin-top: 20px">
-                <i class="glyphicon glyphicon-stats"></i> <br>
-                Gösterilecek Rapor Yok.
-              </div>
-            </td>
-          </tr>
-        {% endif %}
-        </tbody>
-      </table>
+    <table class="table">
+      <thead>
+        <th>Rapor Numarası</th>
+        <th>Alınma Tarihi</th>
+        <th>İşlem</th>
+      </thead>
+      <tbody>
+      {% for report in object_list %}
+        <tr>
+          <td>#{{ report.id }}</td>
+          <td>{{ report.created_at }}</td>
+          <td>
+            <a href="{% url 'report-detail' report.id %}" class="btn btn-inverse">
+              Detay
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      {% if object_list.count == 0 %}
+        <tr>
+          <td colspan="3" style="text-align: center;">
+            <div style="margin-top: 20px">
+              <i class="glyphicon glyphicon-stats"></i> <br>
+              Gösterilecek Rapor Yok.
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+      </tbody>
+    </table>
 
-      <div class="text-center">
-        {% include "partial/paginate.html" %}
-      </div>
+    <div class="text-center">
+      {% include "partial/paginate.html" %}
     </div>
   </div>
 {% endblock content %}

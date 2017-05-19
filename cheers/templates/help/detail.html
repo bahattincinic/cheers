@@ -1,0 +1,14 @@
+{% extends "base_site.html" %}
+
+{% block title %} - Yardım{% endblock title %}
+
+{% block content %}
+  <div class="col-xs-12">
+    <h3>{{ object.title }}</h3>
+    <div>
+      <p>
+        {{ object.content|safe }}
+      </p>
+    </div>
+  </div>
+{% endblock content %}

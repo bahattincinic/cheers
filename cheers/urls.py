@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^suppliers/', include('supplier.urls')),
     url(r'^decision/', include('decision.urls')),
     url(r'^reports/', include('report.urls')),
+    url(r'^help/', include('help.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^admin/editor/', include('redactor.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls')),

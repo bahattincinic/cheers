@@ -16,7 +16,9 @@
             <td>#{{ report.id }}</td>
             <td>{{ report.created_at }}</td>
             <td>
-              <a href="#" class="btn btn-inverse">Detay</a>
+              <a href="{% url 'report-detail' report.id %}" class="btn btn-inverse">
+                Detay
+              </a>
             </td>
           </tr>
         {% endfor %}

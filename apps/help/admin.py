@@ -4,7 +4,7 @@ from .models import Topic
 
 
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'show_home',)
+    list_display = ('id', 'title',)
     search_fields = ('title',)
 
 

@@ -30,14 +30,14 @@ urlpatterns = [
     url(r'^ahp/step-4/supplier-compare/(?P<pk>[0-9]+)/(?P<criterion_pk>[0-9]+)/$', # noqa
         SupplierCompareView.as_view(),
         name="supplier-compare"),
-    url(r'^ahp/step-5/ahp-result/(?P<pk>[0-9]+)/$',
+    url(r'^ahp/step-5/result/(?P<pk>[0-9]+)/$',
         AhpResultView.as_view(),
         name="ahp-result"),
 
-    url(r'^vikor/step-1/vikor-calculate/(?P<pk>[0-9]+)/$',
+    url(r'^vikor/step-1/calculate/(?P<pk>[0-9]+)/$',
         VikorCalculateView.as_view(),
         name="vikor-calculate"),
-    url(r'^vikor/step-2/vikor-done/(?P<pk>[0-9]+)/$',
+    url(r'^vikor/step-2/result/(?P<pk>[0-9]+)/$',
         VikorDoneView.as_view(),
         name="vikor-done"),
 ]

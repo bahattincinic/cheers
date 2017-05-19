@@ -7,7 +7,7 @@
 
 {% block content %}
  <div class="container">
-  {% include "partial/progress_bar.html" with step=5 %}
+  {% include "partial/ahp_progress_bar.html" with step=5 %}
   </div> 
 
   <div class="container" style="margin-top: 20px; margin-left: -63px;">
@@ -45,6 +45,12 @@
 
  <div class="container">
   <div id="container" style="min-width: 300px; height: 400px; margin: 0 auto; margin-top: 30px"></div>
+ </div>
+
+ <div style="float: right; margin-top: 30px; margin-bottom: 30px;">
+   <a href="{% url 'vikor-calculate' report.id %}" class="btn btn-inverse">
+     Kaydet ve Diğer Adıma Geç
+  </a>
  </div>
 {% endblock content %}
 

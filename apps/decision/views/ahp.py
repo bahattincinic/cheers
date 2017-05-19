@@ -1,6 +1,6 @@
 import json
 
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -10,32 +10,7 @@ from django.shortcuts import get_object_or_404
 from criterion.models import Criterion
 from supplier.models import Supplier
 from report.models import Report
-
-
-class BaseStepView(LoginRequiredMixin, TemplateView):
-
-    def get_object(self):
-        return get_object_or_404(
-            Report, id=self.kwargs['pk'],
-            created_by=self.request.user,
-            is_completed=False
-        )
-
-    def get_parent_criterions(self):
-        return Criterion.objects.filter(parent__isnull=True)
-
-    def get_child_criterions(self):
-        return Criterion.objects.filter(parent__isnull=False)
-
-
-class CriterionHierarchyView(BaseStepView):
-    template_name = 'decision/criterion_hierarchy.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CriterionHierarchyView, self).get_context_data(
-            **kwargs)
-        context['criterions'] = self.get_parent_criterions()
-        return context
+from decision.views import BaseStepView
 
 
 class CreateAhpView(LoginRequiredMixin, View):
@@ -50,7 +25,7 @@ class CriterioScoreView(BaseStepView):
     """
     AHP Step-1
     """
-    template_name = 'decision/ahp_criterion_score.html'
+    template_name = 'decision/ahp/ahp_criterion_score.html'
 
     def get_context_data(self, **kwargs):
         context = super(CriterioScoreView, self).get_context_data(
@@ -77,7 +52,7 @@ class CriterioWeightView(BaseStepView):
     """
     AHP Step-2
     """
-    template_name = "decision/criterio_weight.html"
+    template_name = "decision/ahp/criterio_weight.html"
 
     def get_context_data(self, **kwargs):
         context = super(CriterioWeightView, self).get_context_data(
@@ -109,7 +84,7 @@ class CriterioGlobalWeightView(BaseStepView):
     """
     AHP Step-3
     """
-    template_name = "decision/criterio_global_weight.html"
+    template_name = "decision/ahp/criterio_global_weight.html"
 
     def get_context_data(self, **kwargs):
         context = super(CriterioGlobalWeightView, self).get_context_data(
@@ -129,7 +104,7 @@ class CriterioCompareView(BaseStepView):
     """
     AHP Step-3
     """
-    template_name = "decision/criterio_compare.html"
+    template_name = "decision/ahp/criterio_compare.html"
 
     def get_context_data(self, **kwargs):
         context = super(CriterioCompareView, self).get_context_data(
@@ -194,7 +169,7 @@ class SupplierCompareView(BaseStepView):
     """
     AHP Step-4
     """
-    template_name = "decision/criterio_compare.html"
+    template_name = "decision/ahp/criterio_compare.html"
 
     def get_context_data(self, **kwargs):
         context = super(SupplierCompareView, self).get_context_data(
@@ -245,7 +220,7 @@ class AhpResultView(BaseStepView):
     """
     AHP Step-5
     """
-    template_name = "decision/ahp_result.html"
+    template_name = "decision/ahp/ahp_result.html"
 
     def get_context_data(self, **kwargs):
         context = super(AhpResultView, self).get_context_data(

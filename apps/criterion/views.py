@@ -1,4 +1,5 @@
 from django.views.generic.list import ListView
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView)
@@ -36,3 +37,13 @@ class CriterionDeleteView(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+
+class CriterionHierarchyView(TemplateView):
+    template_name = 'criterion/criterion_hierarchy.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CriterionHierarchyView, self).get_context_data(
+            **kwargs)
+        context['criterions'] = Criterion.objects.filter(parent__isnull=True)
+        return context

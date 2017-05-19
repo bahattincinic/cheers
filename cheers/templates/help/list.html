@@ -13,7 +13,7 @@
         <div class="col-md-4">
           <div class="service-box has-bg">
             <h3 class="service-title">
-              <a href="{% url 'topic-detail' item.id %}">
+              <a href="{{ item.get_absolute_url }}">
                 {{ item.title }}
               </a>
             </h3>

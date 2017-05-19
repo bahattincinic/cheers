@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.utils.encoding import smart_text
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Report(models.Model):
     # AHP Step-1 Data
     criterion_priority = JSONField()
@@ -23,7 +26,7 @@ class Report(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '%s report' % self.id
+        return smart_text(self.id)
 
     @staticmethod
     def create_report(created_by):

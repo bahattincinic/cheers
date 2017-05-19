@@ -38,6 +38,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'bootstrap3',
     'rest_framework.authtoken',
+    'redactor',
 ]
 
 LOCAL_APPS = [
@@ -45,7 +46,8 @@ LOCAL_APPS = [
     'criterion',
     'account',
     'decision',
-    'report'
+    'report',
+    'help',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -141,6 +143,10 @@ STATICFILES_DIRS = (
 )
 
 
+MEDIA_ROOT = os.path.normpath(os.path.join(PROJECT_ROOT, 'media'))
+MEDIA_URL = '/media/'
+
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/accounts/logout/'
@@ -169,3 +175,6 @@ RATIONALITY_INDICATOR = {
     14: 1.57,
     15: 1.59
 }
+
+REDACTOR_OPTIONS = {'lang': 'en'}
+REDACTOR_UPLOAD = 'content/'

@@ -19,3 +19,10 @@ class VikorDoneView(BaseStepView):
             **kwargs)
         context['report'] = self.get_object()
         return context
+
+    def get(self, request, *args, **kwargs):
+        report = self.get_object()
+        report.is_completed = True
+        report.save()
+        return super(VikorDoneView, self).get(
+            request, *args, **kwargs)

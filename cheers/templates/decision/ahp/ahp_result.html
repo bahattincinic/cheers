@@ -1,8 +1,9 @@
 {% extends "base_site.html" %}
 
 {% load jsonify %}
+{% load calculation %}
 
-{% block title %} - Adım 3{% endblock title %}
+{% block title %} - Adım 5{% endblock title %}
 
 
 {% block content %}
@@ -26,17 +27,21 @@
         <tr>
           <td>Wi</td>
           {% for child in child_criterions %}
-            <td>-</td>
+            <td>{{ child|global_weight:report }}</td>
           {% endfor %}
-          <td style="background-color: #efefef;">-</td>
+          <td style="background-color: #efefef;"></td>
         </tr>
         {% for supplier in suppliers %}
-          <tr>
+          <tr class="data--row" data-name="{{ supplier.name }}" data-score="{% calculate_supplier_score report forloop.counter %}">
             <td style="font-weight: bold">{{ supplier.name }}</td>
             {% for child in child_criterions %}
-              <td>-</td>
+              <td>
+                {% criterion_w child report forloop.parentloop.counter %}
+              </td>
             {% endfor %}
-            <td style="background-color: #efefef;">-</td>
+            <td style="background-color: #efefef;">
+              {% calculate_supplier_score report forloop.counter %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
@@ -65,6 +70,13 @@
       criterion_compare: {{ report.criterion_compare|jsonify|safe }},
       supplier_compare: {{ report.supplier_compare|jsonify|safe }}
     };
+
+    var chart_data = [];
+    _.forEach($('.data--row'), function(row) {
+      chart_data.push(
+        [$(row).data('name'), parseFloat($(row).data('score'))]
+      );
+    });
 
     $(function() {
       Highcharts.chart('container', {
@@ -99,15 +111,11 @@
             enabled: false
         },
         tooltip: {
-            pointFormat: '{point.y:.1f}'
+            pointFormat: '{point.y:.5f}'
         },
         series: [{
             name: 'Population',
-            data: [
-                {% for supplier in suppliers %}
-                  ['{{ supplier.name }}', 3.7 * {{ supplier.id }}],
-                {% endfor %}
-            ],
+            data: chart_data,
             dataLabels: {
                 enabled: true,
                 rotation: -90,

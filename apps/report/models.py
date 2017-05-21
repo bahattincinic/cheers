@@ -27,6 +27,9 @@ class Report(models.Model):
     created_by = models.ForeignKey('auth.User')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('id',)
+
     def __str__(self):
         return smart_text(self.id)
 

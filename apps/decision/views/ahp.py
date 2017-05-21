@@ -123,10 +123,16 @@ class CriterioCompareView(BaseStepView):
         context['step'] = 3
         context['page_type'] = 'criterio'
 
-        context['report'] = self.get_object()
+        report = self.get_object()
+        context['report'] = report
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
             context['object_list'].count())
+
+        context['progress_data'] = {
+            cr.name: str(cr.id) in report.criterion_compare.keys()
+            for cr in self.get_parent_criterions()
+        }
 
         return context
 
@@ -181,10 +187,16 @@ class SupplierCompareView(BaseStepView):
         context['parent'] = get_object_or_404(
             Criterion, pk=self.kwargs['criterion_pk'])
 
-        context['report'] = self.get_object()
+        report = self.get_object()
+        context['report'] = report
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
             context['object_list'].count())
+
+        context['progress_data'] = {
+            criterion.name: str(criterion.id) in report.supplier_compare.keys()
+            for criterion in self.get_child_criterions()
+        }
 
         return context
 

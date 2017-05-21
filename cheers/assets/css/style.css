@@ -126,6 +126,23 @@ li.help-text a {
   color: #2f4154;
 }
 
+.info-button {
+  width: 50px;
+  height: 50px;
+  background-color: #efefef;
+  border: 1px solid #ddd;
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  cursor: pointer;
+}
+
+.info-button i {
+  margin-left: 10px;
+  margin-top: 10px;
+  font-size: 28px;
+}
+
 .service-box {
   position: relative;
   padding: 35px 55px 35px 100px;

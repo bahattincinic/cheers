@@ -8,5 +8,8 @@ class Criterion(models.Model):
     name = models.CharField(max_length=100, unique=True)
     parent = models.ForeignKey('self', null=True, blank=True)
 
+    class Meta:
+        ordering = ('id',)
+
     def __str__(self):
         return smart_text(self.name)

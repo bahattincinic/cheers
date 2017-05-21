@@ -13,6 +13,9 @@ class Topic(models.Model):
     content = RedactorField()
     summary = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ('id',)
+
     def __str__(self):
         return smart_text(self.title)
 

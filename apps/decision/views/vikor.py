@@ -3,6 +3,7 @@ import json
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
+from supplier.models import Supplier
 from decision.views import BaseStepView
 
 
@@ -13,6 +14,8 @@ class VikorCalculateView(BaseStepView):
         context = super(VikorCalculateView, self).get_context_data(
             **kwargs)
         context['report'] = self.get_object()
+        context['suppliers'] = Supplier.objects.all()
+        context['child_criterions'] = self.get_child_criterions()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -37,6 +40,8 @@ class VikorDoneView(BaseStepView):
         context = super(VikorDoneView, self).get_context_data(
             **kwargs)
         context['report'] = self.get_object()
+        context['suppliers'] = Supplier.objects.all()
+        context['child_criterions'] = self.get_child_criterions()
         return context
 
     def get(self, request, *args, **kwargs):

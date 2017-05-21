@@ -41,6 +41,7 @@ class Report(models.Model):
         report = Report()
         report.created_by = created_by
         report.criterion_priority = {}
+        report.vikor_result = {}
         report.criterion_supplier_score = []
         report.criterion_compare = {}
         report.supplier_compare = {}

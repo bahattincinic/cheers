@@ -129,13 +129,13 @@
         // Total
         _.forEach($(table).find('tfoot > tr:eq(0) > td'), function(column, index) {
           if (index !== 0) {
-            $(column).text(total[index] || 0);
+            $(column).text(parseFloat(total[index] || 0).toFixed(2));
           }
         });
         // Average
         _.forEach($(table).find('tfoot > tr:eq(1) > td'), function(column, index) {
           if (index !== 0) {
-            $(column).text(Math.round((total[index] || 0) / supplierCount));
+            $(column).text(parseFloat((total[index] || 0) / supplierCount).toFixed(2));
           }
         });
       });

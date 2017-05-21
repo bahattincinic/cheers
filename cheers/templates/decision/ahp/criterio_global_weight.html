@@ -1,6 +1,7 @@
 {% extends "base_site.html" %}
 
 {% load jsonify %}
+{% load calculation %}
 
 {% block title %} - Adım 3{% endblock title %}
 
@@ -57,19 +58,19 @@
             min: 0,
             title: {
                 text: 'Global Ağırlıklar'
-            }
+            },
         },
         legend: {
             enabled: false
         },
         tooltip: {
-            pointFormat: '{point.y:.1f}'
+            pointFormat: '{point.y:.5f}'
         },
         series: [{
             name: 'Population',
             data: [
                 {% for criterion in criterions %}
-                  ['{{ criterion.name }}', 3.7 * {{ criterion.id }}],
+                  ['{{ criterion.name }}', {{ criterion|global_weight:report }}],
                 {% endfor %}
             ],
             dataLabels: {

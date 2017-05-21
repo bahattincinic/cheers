@@ -214,6 +214,9 @@
 
     function calculateCrValue(cl_value) {
       var cr_value = cl_value / {{ random_indicator|safe }};
+      if (cr_value < 0) {
+        cr_value = 0;
+      }
       $('#table4 > tbody > tr:eq(3) > td:eq(1)').text(parseFloat(cr_value).toFixed(6));
     }
 
@@ -322,7 +325,7 @@
 
     function checkCalculation() {
       var cr_value = $('#table4 > tbody > tr:eq(3) > td:eq(1)').text();
-      if (cr_value < 0.1 && cr_value > 0) {
+      if (cr_value < 0.1) {
         $('#alertText').text('Değerler TUTARLI. Bir sonraki adıma geçebilirsiniz.');
         $('#alertText').removeClass('alert-danger');
         $('#alertText').addClass('alert-success');

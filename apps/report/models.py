@@ -14,6 +14,8 @@ class Report(models.Model):
     criterion_compare = JSONField()
     # AHP Step-4 Data
     supplier_compare = JSONField()
+    # vikor results
+    vikor_result = JSONField()
 
     # Store criterions and suppliers state when report has created.
     criterions = JSONField()

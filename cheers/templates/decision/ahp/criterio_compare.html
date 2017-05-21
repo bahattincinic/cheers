@@ -1,6 +1,6 @@
 {% extends "base_site.html" %}
 
-{% block title %} - Adım 3{% endblock title %}
+{% block title %} - Adım {{ step }}{% endblock title %}
 
 
 {% block content %}
@@ -168,9 +168,11 @@
         var cellIndex = $(this).parent().index();
         var input = $('#table1 tr:eq(' + cellIndex  +  ') > td:eq(' + rowIndex + ')').find('input');
 
-        if (parsedValue.length === 2 && parseInt(parsedValue[0]) && parseInt(parsedValue[1])) {
-          $(this).val(parseFloat(parseInt(parsedValue[0]) / parseInt(parsedValue[1])).toFixed(2));
-          $(input).val( parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toFixed(2) );
+        if (parsedValue.length === 2 && checkValue(parsedValue[0]) && checkValue(parsedValue[1])) {
+          var val1 = parseFloat(parseInt(parsedValue[0]) / parseInt(parsedValue[1])).toFixed(2);
+          var val2 = parseFloat(parseInt(parsedValue[1]) / parseInt(parsedValue[0])).toFixed(2);
+          $(this).val(val1);
+          $(input).val(val2);
           calculateTotal();
         } else {
          $(this).val('0');
@@ -210,6 +212,19 @@
         checkCalculation();
       });
     });
+
+    function checkValue(value) {
+      if (!parseInt(value)) {
+        return false;
+      }
+      if (parseInt(value) < 1) {
+        return false;
+      }
+      if (parseInt(value) > 9 ) {
+        return false;
+      }
+      return true;
+    }
 
 
     function calculateCrValue(cl_value) {

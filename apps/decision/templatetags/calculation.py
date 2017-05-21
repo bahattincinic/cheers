@@ -36,12 +36,18 @@ def global_weight(criterion, report):
 
 @register.simple_tag
 def criterion_w(criterion, report, index):
+    """
+    Get W value for given index.
+    """
     data = report.supplier_compare[str(criterion.id)]
     return data['w'][index - 1]
 
 
 @register.simple_tag
 def calculate_supplier_score(report, index):
+    """
+    Calculate supplier score for given report and index.
+    """
     total = 0
     for cr_id, data in report.supplier_compare.items():
         criterion = Criterion.objects.get(id=cr_id)

@@ -112,7 +112,7 @@ class CriterioCompareView(BaseStepView):
             **kwargs)
         report = self.get_object()
 
-        parent_pk = int(self.kwargs['parent_pk'])
+        parent_pk = int(self.kwargs['criterion_pk'])
         if parent_pk == 0:
             queryset = report.get_parent_criterions()
             parent = None
@@ -139,12 +139,12 @@ class CriterioCompareView(BaseStepView):
     def post(self, request, *args, **kwargs):
         report = self.get_object()
 
-        parent_pk = int(self.kwargs['parent_pk'])
+        parent_pk = int(self.kwargs['criterion_pk'])
         if parent_pk != 0:
             self.get_parent_criterion(report)
 
         try:
-            report.criterion_compare[parent_pk] = json.loads(
+            report.criterion_compare[str(parent_pk)] = json.loads(
                 request.POST['data'])
             report.save()
         except (ValueError, TypeError):
@@ -187,9 +187,10 @@ class SupplierCompareView(BaseStepView):
         context['step'] = 4
         context['parent'] = self.get_parent_criterion(report)
         context['report'] = report
+        context['object_list'] = report.suppliers
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
-            context['object_list'].count())
+            len(context['object_list']))
 
         context['progress_data'] = {
             criterion['name']: str(criterion['id']) in
@@ -205,7 +206,7 @@ class SupplierCompareView(BaseStepView):
             Criterion, pk=self.kwargs['criterion_pk'])
 
         try:
-            report.supplier_compare[criterion.id] = json.loads(
+            report.supplier_compare[str(criterion.id)] = json.loads(
                 request.POST['data'])
             report.save()
         except (ValueError, TypeError):

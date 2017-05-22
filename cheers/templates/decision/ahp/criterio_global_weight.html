@@ -62,7 +62,7 @@
         series: [{
             name: 'Population',
             data: [
-                {% for criterion in criterions %}
+                {% for criterion in report.get_child_criterions %}
                   ['{{ criterion.name }}', {{ criterion|global_weight:report }}],
                 {% endfor %}
             ],

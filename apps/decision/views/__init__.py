@@ -16,9 +16,9 @@ class BaseStepView(LoginRequiredMixin, TemplateView):
         )
 
     def get_parent_criterion(self, report):
-        parent_pk = int(self.kwargs['parent_pk'])
+        parent_pk = int(self.kwargs['criterion_pk'])
         parent = filter(lambda x: str(x['id']) == str(parent_pk),
-                        report.get_parent_criterions())
+                        report.criterions)
         if len(parent) == 0:
             raise Http404('Criterion does not exist')
         return parent[0]

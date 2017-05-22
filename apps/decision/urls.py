@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^ahp/step-2/criterion-weight/(?P<pk>[0-9]+)/$',
         CriterioWeightView.as_view(),
         name="criterion-weight"),
-    url(r'^ahp/step-3/criterion-compare/(?P<pk>[0-9]+)/(?P<parent_pk>[0-9]+)/$', # noqa
+    url(r'^ahp/step-3/criterion-compare/(?P<pk>[0-9]+)/(?P<criterion_pk>[0-9]+)/$', # noqa
         CriterioCompareView.as_view(),
         name="criterion-compare"),
     url(r'^ahp/step-3/criterion-global-weight/(?P<pk>[0-9]+)/$',

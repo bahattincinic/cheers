@@ -38,7 +38,7 @@
                 <thead>
                   <tr style="background-color: #efefef;">
                     <th style="font-size: 11px">Tedarikçi</th>
-                    {% for child in report.criterion.childs %}
+                    {% for child in criterion.childs %}
                       <th  style="font-size: 11px">{{ child.name }}</th>
                     {% endfor %}
                   </tr>
@@ -113,7 +113,7 @@
    function calculate() {
       _.forEach($('table.table'), function(table) {
         var total = {};
-        var supplierCount = {{ suppliers.count }};
+        var supplierCount = {{ report.suppliers|length }};
         _.forEach($(table).find('tbody > tr'), function(row) {
           _.forEach($(row).find('td'), function(column, index) {
             if ($(column).find('input').length > 0) {

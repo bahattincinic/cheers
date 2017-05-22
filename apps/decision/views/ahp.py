@@ -118,7 +118,7 @@ class CriterioCompareView(BaseStepView):
             parent = None
         else:
             parent = self.get_parent_criterion(report)
-            queryset = parent.childs
+            queryset = parent['childs']
 
         context['object_list'] = queryset
         context['parent'] = parent
@@ -130,7 +130,7 @@ class CriterioCompareView(BaseStepView):
             len(context['object_list']))
 
         context['progress_data'] = {
-            cr.name: str(cr.id) in report.criterion_compare.keys()
+            cr['name']: str(cr['id']) in report.criterion_compare.keys()
             for cr in report.get_parent_criterions()
         }
 
@@ -192,7 +192,8 @@ class SupplierCompareView(BaseStepView):
             context['object_list'].count())
 
         context['progress_data'] = {
-            criterion.name: str(criterion.id) in report.supplier_compare.keys()
+            criterion['name']: str(criterion['id']) in
+            report.supplier_compare.keys()
             for criterion in report.get_child_criterions()
         }
 

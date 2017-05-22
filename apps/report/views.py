@@ -6,14 +6,14 @@ from .models import Report
 
 
 class ReportListView(LoginRequiredMixin, ListView):
-    queryset = Report.objects.all()
+    queryset = Report.objects.filter(is_completed=True).order_by('-id')
     template_name = 'report/list.html'
     paginate_by = 10
 
 
 class ReportDetailView(LoginRequiredMixin, DetailView):
     template_name = 'report/detail.html'
-    queryset = Report.objects.all()
+    queryset = Report.objects.filter(is_completed=True)
 
     def get_context_data(self, **kwargs):
         context = super(ReportDetailView, self).get_context_data(

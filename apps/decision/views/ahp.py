@@ -8,7 +8,6 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from criterion.models import Criterion
-from supplier.models import Supplier
 from report.models import Report
 from decision.views import BaseStepView
 
@@ -104,29 +103,28 @@ class CriterioCompareView(BaseStepView):
     def get_context_data(self, **kwargs):
         context = super(CriterioCompareView, self).get_context_data(
             **kwargs)
+        report = self.get_object()
 
         parent_pk = int(self.kwargs['parent_pk'])
         if parent_pk == 0:
-            queryset = self.get_parent_criterions()
+            queryset = report.get_parent_criterions()
             parent = None
         else:
-            parent = get_object_or_404(Criterion, pk=parent_pk)
-            queryset = Criterion.objects.filter(parent=parent)
+            parent = self.get_parent_criterion(report)
+            queryset = parent.childs
 
         context['object_list'] = queryset
         context['parent'] = parent
         context['step'] = 3
         context['page_type'] = 'criterio'
-
-        report = self.get_object()
         context['report'] = report
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
-            context['object_list'].count())
+            len(context['object_list']))
 
         context['progress_data'] = {
             cr.name: str(cr.id) in report.criterion_compare.keys()
-            for cr in self.get_parent_criterions()
+            for cr in report.get_parent_criterions()
         }
 
         return context
@@ -136,7 +134,7 @@ class CriterioCompareView(BaseStepView):
 
         parent_pk = int(self.kwargs['parent_pk'])
         if parent_pk != 0:
-            get_object_or_404(Criterion, pk=parent_pk)
+            self.get_parent_criterion(report)
 
         try:
             report.criterion_compare[parent_pk] = json.loads(
@@ -148,14 +146,14 @@ class CriterioCompareView(BaseStepView):
                 reverse('criterion-compare',
                         args=[report.id, parent_pk]))
 
-        missins_criterion = Criterion.objects.filter(
-            parent__isnull=True).exclude(
-            id__in=report.criterion_compare.keys()).first()
+        missins_criterion = filter(
+            lambda x: str(x['id']) not in report.criterion_compare.keys(),
+            report.get_parent_criterions())
 
-        if missins_criterion:
+        if len(missins_criterion) > 0:
             return HttpResponseRedirect(
                 reverse('criterion-compare',
-                        args=[report.id, missins_criterion.id]))
+                        args=[report.id, missins_criterion[0]['id']]))
 
         if '0' not in report.criterion_compare.keys():
             return HttpResponseRedirect(
@@ -176,13 +174,11 @@ class SupplierCompareView(BaseStepView):
         context = super(SupplierCompareView, self).get_context_data(
             **kwargs)
 
-        context['object_list'] = Supplier.objects.all()
+        report = self.get_object()
+
         context['page_type'] = 'supplier'
         context['step'] = 4
-        context['parent'] = get_object_or_404(
-            Criterion, pk=self.kwargs['criterion_pk'])
-
-        report = self.get_object()
+        context['parent'] = self.get_parent_criterion(report)
         context['report'] = report
 
         context['random_indicator'] = settings.RATIONALITY_INDICATOR.get(
@@ -190,7 +186,7 @@ class SupplierCompareView(BaseStepView):
 
         context['progress_data'] = {
             criterion.name: str(criterion.id) in report.supplier_compare.keys()
-            for criterion in self.get_child_criterions()
+            for criterion in report.get_child_criterions()
         }
 
         return context
@@ -210,14 +206,14 @@ class SupplierCompareView(BaseStepView):
                 reverse('supplier-compare',
                         args=[report.id, criterion.id]))
 
-        missins_criterion = Criterion.objects.filter(
-            parent__isnull=False).exclude(
-            id__in=report.supplier_compare.keys()).first()
+        missins_criterion = filter(
+            lambda x: str(x['id']) not in report.supplier_compare.keys(),
+            report.get_child_criterions())
 
-        if missins_criterion:
+        if len(missins_criterion) > 0:
             return HttpResponseRedirect(
                 reverse('supplier-compare',
-                        args=[report.id, missins_criterion.id]))
+                        args=[report.id, missins_criterion[0]['id']]))
 
         return HttpResponseRedirect(
             reverse('ahp-result', args=[report.id]))

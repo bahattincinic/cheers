@@ -3,7 +3,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
 from report.models import Report
-from criterion.models import Criterion
 
 
 class BaseStepView(LoginRequiredMixin, TemplateView):
@@ -14,9 +13,3 @@ class BaseStepView(LoginRequiredMixin, TemplateView):
             created_by=self.request.user,
             is_completed=False
         )
-
-    def get_parent_criterions(self):
-        return Criterion.objects.filter(parent__isnull=True)
-
-    def get_child_criterions(self):
-        return Criterion.objects.filter(parent__isnull=False)

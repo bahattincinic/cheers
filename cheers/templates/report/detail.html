@@ -2,6 +2,50 @@
 
 {% block title %} - Raporlar{% endblock title %}
 
-{% block content %}
+{% block head %}
+  <link href="https://code.highcharts.com/css/highcharts.css" rel="stylesheet">  
+{% endblock head %}
 
-{% endblock content %}
+{% block footer %}
+ <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+ <script type="text/javascript">
+   $(function() {
+      jQuery(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) { // on tab selection event
+          jQuery( ".contains-chart" ).each(function() { // target each element with the .contains-chart class
+              var chart = jQuery(this).highcharts(); // target the chart itself
+              chart.reflow() // reflow that chart
+          });
+      });
+   })
+ </script>
+
+ <div class="container page--container" style="">
+
+   <div style="margin-left: 20px; margin-right: 20px;">
+     <!-- Nav tabs -->
+     <ul class="nav nav-tabs" role="tablist">
+       <li class="active">
+         <a href="#ahp" aria-controls="ahp" role="tab" data-toggle="tab">
+           AHP
+         </a>
+       </li>
+       <li>
+         <a href="#vikor" aria-controls="vikor" role="tab" data-toggle="tab">
+           VIKOR
+         </a>
+       </li>
+     </ul>
+
+     <!-- Tab panes -->
+     <div class="tab-content">
+       <div role="tabpanel" class="tab-pane active" id="ahp">
+         {% include "partial/ahp_result.html" with report=report %}
+       </div>
+       <div role="tabpanel" class="tab-pane" id="vikor">
+         {% include "partial/vikor_result.html" with report=report %}
+       </div>
+     </div>
+   </div>
+
+ </div>
+{% endblock footer %}

@@ -16,20 +16,20 @@
         {% csrf_token %}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-           {% for criterion in criterions %}
+           {% for criterion in report.get_parent_criterions %}
              <li role="presentation" {% if forloop.first %}class="active"{% endif %}>
                <a href="#tab_{{ criterion.id }}"
                    id="label_{{ criterion.id }}"
                    aria-controls="tab_{{ criterion.id }}"
                    role="tab" data-toggle="tab" style="color: #2f4154">
-                 {{ criterion.name }} <span class="badge">{{ criterion.criterion_set.count }}</span>
+                 {{ criterion.name }} <span class="badge">{{ criterion.count }}</span>
                </a>
              </li>
            {% endfor %}
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
-          {% for criterion in criterions %}
+          {% for criterion in report.get_parent_criterions %}
             <div role="tabpanel"
                 aria-labelledby="label_{{ criterion.id }}"
                 class="tab-pane {% if forloop.first %}active{% endif %}"
@@ -38,16 +38,16 @@
                 <thead>
                   <tr style="background-color: #efefef;">
                     <th style="font-size: 11px">Tedarikçi</th>
-                    {% for child in criterion.criterion_set.all %}
+                    {% for child in report.criterion.childs %}
                       <th  style="font-size: 11px">{{ child.name }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
                 <tbody>
-                  {% for supplier in suppliers %}
+                  {% for supplier in report.suppliers %}
                     <tr>
                       <td  style="font-size: 11px">{{ supplier.name }}</td>
-                      {% for child in criterion.criterion_set.all %}
+                      {% for child in criterion.childs %}
                         <td style="font-size: 11px">
                            <input
                             type="number"
@@ -67,13 +67,13 @@
                 <tfoot>
                   <tr style="background-color: #efefef;">
                     <td>Toplam</td>
-                    {% for child in criterion.criterion_set.all %}
+                    {% for child in criterion.childs %}
                     <td>0</td>
                     {% endfor %}
                   </tr style="background-color: #efefef;">
                   <tr style="background-color: #efefef;">
                     <td>Ortalama</td>
-                    {% for child in criterion.criterion_set.all %}
+                    {% for child in criterion.childs %}
                     <td>0</td>
                     {% endfor %}
                   </tr>

@@ -30,7 +30,6 @@ class CriterioScoreView(BaseStepView):
     def get_context_data(self, **kwargs):
         context = super(CriterioScoreView, self).get_context_data(
             **kwargs)
-        context['criterions'] = self.get_parent_criterions()
         context['report'] = self.get_object()
         return context
 
@@ -58,8 +57,6 @@ class CriterioWeightView(BaseStepView):
         context = super(CriterioWeightView, self).get_context_data(
             **kwargs)
 
-        context['suppliers'] = Supplier.objects.all()
-        context['criterions'] = self.get_parent_criterions()
         context['report'] = self.get_object()
         return context
 
@@ -90,13 +87,11 @@ class CriterioGlobalWeightView(BaseStepView):
         context = super(CriterioGlobalWeightView, self).get_context_data(
             **kwargs)
 
-        criterions = self.get_child_criterions()
         report = self.get_object()
-        context['suppliers'] = Supplier.objects.all()
-        context['criterions'] = criterions
+        criterions = report.get_child_criterions()
         context['report'] = report
         context['next_url'] = reverse('supplier-compare',
-                                      args=[report.id, criterions.first().id])
+                                      args=[report.id, criterions[0]['id']])
         return context
 
 
@@ -238,6 +233,4 @@ class AhpResultView(BaseStepView):
         context = super(AhpResultView, self).get_context_data(
             **kwargs)
         context['report'] = self.get_object()
-        context['child_criterions'] = self.get_child_criterions()
-        context['suppliers'] = Supplier.objects.all()
         return context

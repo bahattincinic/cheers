@@ -34,12 +34,52 @@ class Report(models.Model):
         return smart_text(self.id)
 
     @staticmethod
+    def serialize_criterions():
+        from criterion.models import Criterion
+        criterions = []
+        for cr in Criterion.objects.all():
+            if cr.parent_id:
+                criterions.append({
+                    'id': cr.id,
+                    'name': cr.name,
+                    'parent': {
+                        'id': cr.parent.id,
+                        'name': cr.parent.name,
+                        'count': cr.parent.criterion_set.count()
+                    }
+                })
+            else:
+                criterions.append({
+                    'id': cr.id,
+                    'name': cr.name,
+                    'parent': None,
+                    'childs': [
+                        {
+                            "id": child.id,
+                            "name": child.name
+                        }
+                        for child in cr.criterion_set.all()
+                    ]
+                })
+        return criterions
+
+    @staticmethod
+    def serialize_suppliers():
+        from supplier.models import Supplier
+
+        return [
+            {
+                'id': supplier.id,
+                'name': supplier.name
+            }
+            for supplier in Supplier.objects.all()
+        ]
+
+    @staticmethod
     def create_report(created_by):
         """
         Create Initial Report.
         """
-        from criterion.models import Criterion
-        from supplier.models import Supplier
 
         report = Report()
         report.created_by = created_by
@@ -48,16 +88,13 @@ class Report(models.Model):
         report.criterion_supplier_score = []
         report.criterion_compare = {}
         report.supplier_compare = {}
-        report.criterions = {
-            criterion.id: {
-                'name': criterion.name,
-                'parent': criterion.parent_id
-            }
-            for criterion in Criterion.objects.all()
-        }
-        report.suppliers = {
-            supplier.id: supplier.name
-            for supplier in Supplier.objects.all()
-        }
+        report.criterions = Report.serialize_criterions()
+        report.suppliers = Report.serialize_suppliers()
         report.save()
         return report
+
+    def get_parent_criterions(self):
+        return filter(lambda x: x['parent'] is None, self.criterions)
+
+    def get_child_criterions(self):
+        return filter(lambda x: x['parent'] is not None, self.criterions)

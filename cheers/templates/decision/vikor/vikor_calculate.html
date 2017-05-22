@@ -13,7 +13,7 @@
       <thead>
         <tr>
           <th></th>
-          {% for criterio in child_criterions %}
+          {% for criterio in report.get_child_criterions %}
             <th style="background-color: #efefef;">{{ criterio.name }}</th>
           {% endfor %}
         </tr>
@@ -21,14 +21,14 @@
       <tbody>
         <tr>
           <td>Wi</td>
-          {% for child in child_criterions %}
+          {% for child in report.get_child_criterions %}
             <td>0</td>
           {% endfor %}
         </tr>
         {% for supplier in suppliers %}
           <tr class="data--row">
             <td style="font-weight: bold">{{ supplier.name }}</td>
-            {% for child in child_criterions %}
+            {% for child in report.get_child_criterions %}
               <td>
                 0
               </td>
@@ -44,7 +44,7 @@
       <thead>
         <tr>
           <th></th>
-          {% for criterio in child_criterions %}
+          {% for criterio in report.get_child_criterions %}
             <th style="background-color: #efefef;">{{ criterio.name }}</th>
           {% endfor %}
         </tr>
@@ -52,14 +52,14 @@
       <tbody>
         <tr>
           <td>Wi</td>
-          {% for child in child_criterions %}
+          {% for child in report.get_child_criterions %}
             <td>0</td>
           {% endfor %}
         </tr>
         {% for supplier in suppliers %}
           <tr class="data--row">
             <td style="font-weight: bold">{{ supplier.name }}</td>
-            {% for child in child_criterions %}
+            {% for child in report.get_child_criterions %}
               <td>
                 0
               </td>
@@ -92,7 +92,7 @@
           <td>Qi</td>
           <td>Qi</td>
         </tr>
-        {% for supplier in suppliers %}
+        {% for supplier in report.suppliers %}
         <tr>
           <td>{{ supplier.name }}</td>
           <td>0</td>
@@ -164,7 +164,7 @@
 
     <legend>Sıralama sonuçları ve koşulların denetlenmesi</legend>
     <table class="table">
-      {% for supplier in suppliers %}
+      {% for supplier in report.suppliers %}
       <tr>
         <td>{{ supplier.name }}</td>
         <td>0</td>

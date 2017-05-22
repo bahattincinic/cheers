@@ -9,12 +9,19 @@ from django.shortcuts import get_object_or_404
 
 from criterion.models import Criterion
 from report.models import Report
+from supplier.models import Supplier
 from decision.views import BaseStepView
 
 
 class CreateAhpView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
+        if Criterion.objects.filter(parent__isnull=True).count() == 0 or \
+                Criterion.objects.filter(parent__isnull=False).count() == 0 or\
+                Supplier.objects.count() == 0:
+            # no data
+            return HttpResponseRedirect(reverse('home'))
+
         report = Report.create_report(request.user)
         return HttpResponseRedirect(
             reverse('criterion-score', args=[report.id]))

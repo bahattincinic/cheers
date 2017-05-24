@@ -2,8 +2,6 @@ import json
 
 from django.template import Library
 
-from criterion.models import Criterion
-
 
 register = Library()
 
@@ -18,15 +16,15 @@ def global_weight(criterion, report):
     Criterion Count = 5
     Global Weight = 1 / 5 = 0.2
     """
-    criterion_count = criterion.parent.criterion_set.count()
-    data = report.criterion_compare[str(criterion.parent.id)]
+    criterion_count = criterion['parent']['count']
+    data = report.criterion_compare[str(criterion['parent']['id'])]
     criterion_index = 0
 
     columns = filter(lambda x: x != 'criterion_0',
                      data['main_table'][0])
     # get column index from matris
     for index, column in enumerate(columns):
-        if 'criterion_%s' % criterion.id == column:
+        if 'criterion_%s' % criterion['id'] == column:
             criterion_index = index
             break
 
@@ -39,7 +37,7 @@ def criterion_w(criterion, report, index):
     """
     Get W value for given index.
     """
-    data = report.supplier_compare[str(criterion.id)]
+    data = report.supplier_compare[str(criterion['id'])]
     return data['w'][index - 1]
 
 
@@ -50,7 +48,8 @@ def calculate_supplier_score(report, index):
     """
     total = 0
     for cr_id, data in report.supplier_compare.items():
-        criterion = Criterion.objects.get(id=cr_id)
+        criterion = filter(lambda x: str(x['id']) == str(cr_id),
+                           report.get_child_criterions())[0]
         w = float(data['w'][index - 1])
         weight = w * float(global_weight(criterion, report))
         total += weight

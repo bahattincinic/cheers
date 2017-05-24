@@ -14,3 +14,11 @@ class ReportListView(LoginRequiredMixin, ListView):
 class ReportDetailView(LoginRequiredMixin, DetailView):
     template_name = 'report/detail.html'
     queryset = Report.objects.filter(is_completed=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportDetailView, self).get_context_data(
+            **kwargs)
+        report = self.get_object()
+        context['child_criterions'] = filter(lambda x: x['parent'] is not None,
+                                             report.criterions)
+        return context

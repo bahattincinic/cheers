@@ -254,47 +254,47 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
-      <tr>
-        <td>Q(A2)</td>
+      <tr class="q_a2_row">
+        <td  style="background-color: #efefef;">Q(A2)</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr class="q_a1_row">
+        <td  style="background-color: #efefef;">Q(A1)</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr class="q_difference_row">
+        <td  style="background-color: #efefef;">Q(A2) - Q(A1)</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
       <tr>
-        <td>Q(A1)</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>Q(A2) - Q(A1)</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>DQ</td>
+        <td  style="background-color: #efefef;">DQ</td>
         <td class="dq">&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td class="dq">&nbsp;</td>
+        <td class="dq">&nbsp;</td>
+        <td class="dq">&nbsp;</td>
       </tr>
-      <tr>
+      <tr  style="background-color: #efefef;">
         <td>Koşul 1</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td class="rule_1">&nbsp;</td>
+        <td class="rule_1">&nbsp;</td>
+        <td class="rule_1">&nbsp;</td>
+        <td class="rule_1">&nbsp;</td>
       </tr>
-      <tr>
+      <tr  style="background-color: #efefef;">
         <td>Koşul 2</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td class="rule_2">&nbsp;</td>
+        <td class="rule_2">&nbsp;</td>
+        <td class="rule_2">&nbsp;</td>
+        <td class="rule_2">&nbsp;</td>
       </tr>
     </table>
   </div>
@@ -346,6 +346,32 @@
     var supplierCount = {{ report.suppliers|length }};
     var dq = parseFloat(1 / (supplierCount - 1)).toFixed(3);
     $('.dq').text(dq);
+
+    // calculate Q(A2) and Q(A1)
+    for (var j = 0; j < 5; j++) {
+      var q_values = _.sortBy(_.uniqBy(_.map($('.q_' + j), function(item){
+        return parseFloat($(item).text());
+      })));
+      var q_a1 = q_values[0];
+      var q_a2 = q_values[1];
+      var difference = parseFloat(q_a2 - q_a1).toFixed(3);
+
+      $($('.q_a2_row').find('td')[j + 1]).text(q_a2);
+      $($('.q_a1_row').find('td')[j + 1]).text(q_a1);
+      $($('.q_difference_row').find('td')[j + 1]).text(difference);
+
+      if (difference => dq) {
+        $('.rule_1').text('DOĞRU');
+      } else {
+        $('.rule_1').text('YANLIŞ');
+      }
+
+      if (difference => q1) {
+        $('.rule_2').text('DOĞRU');
+      } else {
+        $('.rule_2').text('YANLIŞ');
+      }
+    }
 
     // json data
     var json_data = [];

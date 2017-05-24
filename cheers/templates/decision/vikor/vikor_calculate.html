@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% load calculation %}
+
 {% block title %} - Vikor Adım 1{% endblock title %}
 
 {% block content %}
@@ -7,6 +9,55 @@
     {% include "partial/vikor_progress_bar.html" with step=1 %}
   </div>
   <div class="container" style="margin-top: 20px; margin-bottom: 50px">
+    <legend>En iyi ve en kötü kriter değerlerinin belirlenmesi</legend>
+
+    <table class="table big--table">
+      <thead>
+        <tr>
+          <th style="background-color: #efefef;"></th>
+          {% for criterio in report.get_child_criterions %}
+            <th style="background-color: #efefef;">
+              {{ criterio.name }}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wi</td>
+          {% for child in report.get_child_criterions %}
+            <td>{{ child|global_weight:report }}</td>
+          {% endfor %}
+        </tr>
+        {% for supplier in report.suppliers %}
+          <tr class="data--row">
+            <td style="font-weight: bold">{{ supplier.name }}</td>
+            {% for child in report.get_child_criterions %}
+              <td>
+                {% get_supplier_criterion_score report supplier child %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        <tr style="background-color: #efefef;">
+          <td>fi*</td>
+          {% for child in report.get_child_criterions %}
+            <td>
+              {% best_criterion_score report child %}
+            </td>
+          {% endfor %}
+        </tr>
+        <tr style="background-color: #efefef;">
+          <td>fi-</td>
+          {% for child in report.get_child_criterions %}
+            <td>
+              {% worst_criterion_score report child %}
+            </td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+
     <legend>Normalizasyon Matrisi</legend>
 
     <table class="table big--table">
@@ -22,15 +73,15 @@
         <tr>
           <td>Wi</td>
           {% for child in report.get_child_criterions %}
-            <td>0</td>
+            <td>{{ child|global_weight:report }}</td>
           {% endfor %}
         </tr>
-        {% for supplier in suppliers %}
+        {% for supplier in report.suppliers %}
           <tr class="data--row">
             <td style="font-weight: bold">{{ supplier.name }}</td>
             {% for child in report.get_child_criterions %}
               <td>
-                0
+                {% get_supplier_normalized_criterion_score report supplier child %}
               </td>
             {% endfor %}
           </tr>
@@ -53,15 +104,15 @@
         <tr>
           <td>Wi</td>
           {% for child in report.get_child_criterions %}
-            <td>0</td>
+            <td>{{ child|global_weight:report }}</td>
           {% endfor %}
         </tr>
-        {% for supplier in suppliers %}
+        {% for supplier in report.suppliers %}
           <tr class="data--row">
             <td style="font-weight: bold">{{ supplier.name }}</td>
             {% for child in report.get_child_criterions %}
               <td>
-                0
+                {% get_supplier_weighted_criterion_score report supplier child %}
               </td>
             {% endfor %}
           </tr>
@@ -95,13 +146,17 @@
         {% for supplier in report.suppliers %}
         <tr>
           <td>{{ supplier.name }}</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
+          <td>
+            {% get_si_value report supplier %}
+          </td>
+          <td>
+            {% get_ri_value report supplier %}
+          </td>
+          <td>{% get_qi_value report supplier 0 %}</td>
+          <td>{% get_qi_value report supplier 0.25 %}</td>
+          <td>{% get_qi_value report supplier 0.50 %}</td>
+          <td>{% get_qi_value report supplier 0.75 %}</td>
+          <td>{% get_qi_value report supplier 1 %}</td>
         </tr>
         {% endfor %}
 
@@ -118,7 +173,7 @@
 
         <tr>
           <td>S*</td>
-          <td>0</td>
+          <td>{% get_min_si_value report %}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -129,7 +184,7 @@
 
         <tr>
           <td>S-</td>
-          <td>0</td>
+          <td>{% get_max_si_value report %}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -140,7 +195,7 @@
 
         <tr>
           <td>R*</td>
-          <td>0</td>
+          <td>{% get_min_ri_value report %}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -151,7 +206,7 @@
 
         <tr>
           <td>R-</td>
-          <td>0</td>
+          <td>{% get_max_ri_value report %}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>

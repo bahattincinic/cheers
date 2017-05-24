@@ -7,6 +7,7 @@
     <table class="table">
       <thead>
         <th>Rapor Numarası</th>
+        <th>Raporu Alan</th>
         <th>Alınma Tarihi</th>
         <th>İşlem</th>
       </thead>
@@ -14,6 +15,7 @@
       {% for report in object_list %}
         <tr>
           <td>#{{ report.id }}</td>
+          <td>@{{ report.created_by.username }}</td>
           <td>{{ report.created_at }}</td>
           <td>
             <a href="{{ report.get_absolute_url }}" class="btn btn-inverse">
@@ -24,7 +26,7 @@
       {% endfor %}
       {% if object_list.count == 0 %}
         <tr>
-          <td colspan="3" style="text-align: center;">
+          <td colspan="4" style="text-align: center;">
             <div style="margin-top: 20px">
               <i class="glyphicon glyphicon-stats"></i> <br>
               Gösterilecek Rapor Yok.

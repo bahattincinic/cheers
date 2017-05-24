@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.utils.encoding import smart_text
 from django.utils.encoding import python_2_unicode_compatible
+from django.urls import reverse
 
 
 @python_2_unicode_compatible
@@ -32,6 +33,13 @@ class Report(models.Model):
 
     def __str__(self):
         return smart_text(self.id)
+
+    def get_absolute_url(self):
+        slug = '%s-%s-%s' % (
+            self.created_at.year,
+            self.created_at.month, self.created_at.day
+        )
+        return reverse('report-detail', args=[self.id, slug])
 
     @staticmethod
     def serialize_criterions():

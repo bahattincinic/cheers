@@ -16,7 +16,7 @@
           <td>#{{ report.id }}</td>
           <td>{{ report.created_at }}</td>
           <td>
-            <a href="{% url 'report-detail' report.id %}" class="btn btn-inverse">
+            <a href="{{ report.get_absolute_url }}" class="btn btn-inverse">
               Detay
             </a>
           </td>

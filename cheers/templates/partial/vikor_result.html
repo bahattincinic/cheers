@@ -60,8 +60,22 @@
           series: [{
               name: 'Population',
               data: [
-                  {% for supplier in report.suppliers %}
-                    ['{{ supplier.name }}', 3.5 * {{ supplier.id }}],
+                  {% for item in report.vikor_result %}
+                    {% if i == "1" %}
+                      ['{{ item.name }}', {{ item.q1 }}],
+                    {% endif %}
+                    {% if i == "2" %}
+                      ['{{ item.name }}', {{ item.q2 }}],
+                    {% endif %}
+                    {% if i == "3" %}
+                      ['{{ item.name }}', {{ item.q3 }}],
+                    {% endif %}
+                    {% if i == "4" %}
+                      ['{{ item.name }}', {{ item.q4 }}],
+                    {% endif %}
+                    {% if i == "5" %}
+                      ['{{ item.name }}', {{ item.q5 }}],
+                    {% endif %}
                   {% endfor %}
               ],
               dataLabels: {

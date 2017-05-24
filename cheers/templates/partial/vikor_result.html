@@ -7,8 +7,6 @@
 </div>
 
 <script type="text/javascript">
-  {% include "partial/importance_scale.html" %}
-
   $(function() {
     {% for i in "12345" %}
         Highcharts.chart('chart_{{ i }}', {

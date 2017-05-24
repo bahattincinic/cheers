@@ -309,19 +309,19 @@
 {% block footer %}
  <script type="text/javascript">
   $(function() {
+    // rank calculation.
     for (var i = 0; i < $('.rank--rows').length; i++) {
       for (var j = 0; j < 5; j++) {
         var q_values = _.map($('.q_' + j), function(item){
           return parseFloat($(item).text());
         });
+
         var current_value = q_values[i];
         var index = 0;
-
-        var grouped = _.groupBy(_.sortBy(q_values));
-
         var arr = _.sortBy(q_values);
         var prev = -1;
         var same = -1;
+
         for (var q = 0; q < arr.length; q++) {
           index += 1;
           if (arr[q] !== prev) {

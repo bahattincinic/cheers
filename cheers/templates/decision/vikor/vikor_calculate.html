@@ -235,7 +235,7 @@
     <legend>Sıralama sonuçları ve koşulların denetlenmesi</legend>
     <table class="table rank-table">
       {% for supplier in report.suppliers %}
-      <tr class="rank--rows">
+      <tr class="rank--rows" data-id="{{ supplier.id }}" data-name="{{ supplier.name }}">
         <td>{{ supplier.name }}</td>
         <td>0</td>
         <td>0</td>
@@ -296,6 +296,14 @@
       </tr>
     </table>
   </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="data" />
+    <div style="float: right;margin-bottom: 30px;">
+      <input type="submit" value="Kaydet ve Diğer Adıma Geç" class="btn btn-lg btn-inverse" />
+    </div>
+  </form>
 {% endblock content %}
 
 {% block footer %}
@@ -329,6 +337,28 @@
         $($($('.rank--rows')[i]).find('td')[j + 1]).text(index);
       }
     }
+
+    var json_data = [];
+    for (var i = 0; i < $('.rank--rows').length; i++) {
+      var id = $($('.rank--rows')[i]).data('id');
+      var name = $($('.rank--rows')[i]).data('name');
+      var q1 = $($($('.rank--rows')[i]).find('td')[1]).text();
+      var q2 = $($($('.rank--rows')[i]).find('td')[2]).text();
+      var q3 = $($($('.rank--rows')[i]).find('td')[3]).text();
+      var q4 = $($($('.rank--rows')[i]).find('td')[4]).text();
+      var q5 = $($($('.rank--rows')[i]).find('td')[5]).text();
+      json_data.push({
+        id: parseInt(id),
+        name: name,
+        q1: parseInt(q1),
+        q2: parseInt(q2),
+        q3: parseInt(q3),
+        q4: parseInt(q4),
+        q5: parseInt(q5)
+      });
+    }
+    $('input[name=data]').val(JSON.stringify(json_data));
+
   });
  </script> 
 {% endblock footer %}

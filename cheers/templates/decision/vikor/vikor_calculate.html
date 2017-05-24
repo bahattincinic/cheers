@@ -152,25 +152,27 @@
         <tr class="calculated--rows">
           <td>{{ supplier.name }}</td>
           <td>
-            {% get_si_value report supplier %}
+            {% get_si_value report supplier as si %}
+            {{ si }}
           </td>
           <td>
-            {% get_ri_value report supplier %}
+            {% get_ri_value report supplier as ri %}
+            {{ ri }}
           </td>
           <td class="q_0">
-            {% get_qi_value report supplier 0 min_si_value max_si_value min_ri_value max_ri_value %}
+            {% get_qi_value report supplier 0 min_si_value max_si_value min_ri_value max_ri_value si ri %}
           </td>
           <td class="q_1">
-            {% get_qi_value report supplier 0.25 min_si_value max_si_value min_ri_value max_ri_value %}
+            {% get_qi_value report supplier 0.25 min_si_value max_si_value min_ri_value max_ri_value si ri %}
           </td>
           <td class="q_2">
-            {% get_qi_value report supplier 0.50 min_si_value max_si_value min_ri_value max_ri_value %}
+            {% get_qi_value report supplier 0.50 min_si_value max_si_value min_ri_value max_ri_value si ri %}
           </td>
           <td class="q_3">
-            {% get_qi_value report supplier 0.75 min_si_value max_si_value min_ri_value max_ri_value %}
+            {% get_qi_value report supplier 0.75 min_si_value max_si_value min_ri_value max_ri_value si ri %}
           </td>
           <td class="q_4">
-            {% get_qi_value report supplier 1 min_si_value max_si_value min_ri_value max_ri_value %}
+            {% get_qi_value report supplier 1 min_si_value max_si_value min_ri_value max_ri_value si ri %}
           </td>
         </tr>
         {% endfor %}

@@ -120,8 +120,13 @@
       </tbody>
     </table>
 
+    {% get_min_si_value report as min_si_value %}
+    {% get_max_si_value report as max_si_value %}
+    {% get_min_ri_value report as min_ri_value %}
+    {% get_max_ri_value report as max_ri_value %}
+
     <legend>Hesaplanan Si, Ri ve Qi Değerleri</legend>
-    <table class="table">
+    <table class="table calculated--table">
       <tbody>
         <tr>
           <td></td>
@@ -144,7 +149,7 @@
           <td>Qi</td>
         </tr>
         {% for supplier in report.suppliers %}
-        <tr>
+        <tr class="calculated--rows">
           <td>{{ supplier.name }}</td>
           <td>
             {% get_si_value report supplier %}
@@ -152,11 +157,21 @@
           <td>
             {% get_ri_value report supplier %}
           </td>
-          <td>{% get_qi_value report supplier 0 %}</td>
-          <td>{% get_qi_value report supplier 0.25 %}</td>
-          <td>{% get_qi_value report supplier 0.50 %}</td>
-          <td>{% get_qi_value report supplier 0.75 %}</td>
-          <td>{% get_qi_value report supplier 1 %}</td>
+          <td class="q_0">
+            {% get_qi_value report supplier 0 min_si_value max_si_value min_ri_value max_ri_value %}
+          </td>
+          <td class="q_1">
+            {% get_qi_value report supplier 0.25 min_si_value max_si_value min_ri_value max_ri_value %}
+          </td>
+          <td class="q_2">
+            {% get_qi_value report supplier 0.50 min_si_value max_si_value min_ri_value max_ri_value %}
+          </td>
+          <td class="q_3">
+            {% get_qi_value report supplier 0.75 min_si_value max_si_value min_ri_value max_ri_value %}
+          </td>
+          <td class="q_4">
+            {% get_qi_value report supplier 1 min_si_value max_si_value min_ri_value max_ri_value %}
+          </td>
         </tr>
         {% endfor %}
 
@@ -173,7 +188,7 @@
 
         <tr>
           <td>S*</td>
-          <td>{% get_min_si_value report %}</td>
+          <td>{{ min_si_value }}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -184,7 +199,7 @@
 
         <tr>
           <td>S-</td>
-          <td>{% get_max_si_value report %}</td>
+          <td>{{ max_si_value }}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -195,7 +210,7 @@
 
         <tr>
           <td>R*</td>
-          <td>{% get_min_ri_value report %}</td>
+          <td>{{ min_ri_value }}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -206,7 +221,7 @@
 
         <tr>
           <td>R-</td>
-          <td>{% get_max_ri_value report %}</td>
+          <td>{{ max_ri_value }}</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -218,9 +233,9 @@
     </table>
 
     <legend>Sıralama sonuçları ve koşulların denetlenmesi</legend>
-    <table class="table">
+    <table class="table rank-table">
       {% for supplier in report.suppliers %}
-      <tr>
+      <tr class="rank--rows">
         <td>{{ supplier.name }}</td>
         <td>0</td>
         <td>0</td>
@@ -282,3 +297,38 @@
     </table>
   </div>
 {% endblock content %}
+
+{% block footer %}
+ <script type="text/javascript">
+  $(function() {
+    for (var i = 0; i < $('.rank--rows').length; i++) {
+      for (var j = 0; j < 5; j++) {
+        var q_values = _.map($('.q_' + j), function(item){
+          return parseFloat($(item).text());
+        });
+        var current_value = q_values[i];
+        var index = 0;
+
+        var grouped = _.groupBy(_.sortBy(q_values));
+
+        var arr = _.sortBy(q_values);
+        var prev = -1;
+        var same = -1;
+        for (var q = 0; q < arr.length; q++) {
+          index += 1;
+          if (arr[q] !== prev) {
+            prev = arr[q];
+            same = index;
+          }
+          if (arr[q] === current_value) {
+            index = same;
+            break;
+          }
+        }
+
+        $($($('.rank--rows')[i]).find('td')[j + 1]).text(index);
+      }
+    }
+  });
+ </script> 
+{% endblock footer %}

@@ -197,19 +197,24 @@ def get_ri_value(report, supplier):
 
 
 @register.simple_tag
-def get_qi_value(report, supplier, weight):
+def get_qi_value(report, supplier, weight, min_si, max_si, min_ri, max_ri):
     """
     Vikor Step 1 Calculation.
     """
     si = float(get_si_value(report, supplier))
     ri = float(get_ri_value(report, supplier))
-    min_si = float(get_min_si_value(report))
-    max_si = float(get_max_si_value(report))
-    min_ri = float(get_min_ri_value(report))
-    max_ri = float(get_max_ri_value(report))
+    min_si = float(min_si)
+    max_si = float(max_si)
+    min_ri = float(min_ri)
+    max_ri = float(max_ri)
     total = ((weight * (si - min_si)) / (max_si - min_si)) + \
             (((1 - weight) * (ri - min_ri)) / (max_ri - min_ri))
     return '%.4f' % total
+
+
+@register.simple_tag
+def get_rank(report, supplier, weight):
+    return 0
 
 
 @register.simple_tag

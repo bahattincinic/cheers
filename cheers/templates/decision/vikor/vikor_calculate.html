@@ -277,7 +277,7 @@
       </tr>
       <tr>
         <td>DQ</td>
-        <td>&nbsp;</td>
+        <td class="dq">&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -342,6 +342,12 @@
       }
     }
 
+    // add dq
+    var supplierCount = {{ report.suppliers|length }};
+    var dq = parseFloat(1 / (supplierCount - 1)).toFixed(3);
+    $('.dq').text(dq);
+
+    // json data
     var json_data = [];
     for (var i = 0; i < $('.rank--rows').length; i++) {
       var id = $($('.rank--rows')[i]).data('id');

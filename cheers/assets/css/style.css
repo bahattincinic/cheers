@@ -263,3 +263,34 @@ li.help-text a {
   -webkit-box-shadow: 0 2px 4px rgba(221, 221, 221, 0.75);
   -o-box-shadow: 0 2px 4px rgba(221, 221, 221, 0.75);
 }
+
+.print--title {
+  color: #fff;
+  padding: 13px;
+  display: none;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+
+@media print {
+  .print--button {
+    display: none
+  }
+
+  .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .nav-tabs {
+    display: none;
+  }
+
+  .print--title {
+    display: block
+  }
+
+  .pagebreak { page-break-before: always; }
+}

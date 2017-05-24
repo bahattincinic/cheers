@@ -19,7 +19,19 @@
    })
  </script>
 
- <div class="container page--container" style="">
+ <div class="container page--container print--page" style="">
+
+  <div class="well" style="margin-left: 20px; margin-right: 20px;">
+    <b>Raporu Alan:</b> @{{ report.created_by.username }} </br>
+    <b>Rapor Alınma Tarihi:</b> {{ report.created_at }} </br>
+
+    <a class="btn btn-inverse print--button"
+        href="#"
+        style="margin-top: 10px" onClick="window.print()">
+      <i class="glyphicon glyphicon-print" style="margin-right: 5px"></i>
+      Çıktı Al
+    </a>
+  </div>
 
    <div style="margin-left: 20px; margin-right: 20px;">
      <!-- Nav tabs -->
@@ -39,9 +51,12 @@
      <!-- Tab panes -->
      <div class="tab-content">
        <div role="tabpanel" class="tab-pane active" id="ahp">
+         <div class="print--title">AHP</div>
          {% include "partial/ahp_result.html" with report=report %}
        </div>
        <div role="tabpanel" class="tab-pane" id="vikor">
+         <div class="pagebreak"> </div>
+         <div class="print--title">VİKOR</div>
          {% include "partial/vikor_result.html" with report=report %}
        </div>
      </div>

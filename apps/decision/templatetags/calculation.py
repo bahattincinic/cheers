@@ -50,8 +50,8 @@ def calculate_supplier_score(report, index):
     """
     total = 0
     for cr_id, data in report.supplier_compare.items():
-        criterion = filter(lambda x: str(x['id']) == str(cr_id),
-                           report.get_child_criterions())[0]
+        criterion = list(filter(lambda x: str(x['id']) == str(cr_id),
+                         report.get_child_criterions()))[0]
         w = float(data['w'][index - 1])
         weight = w * float(global_weight(criterion, report))
         total += weight

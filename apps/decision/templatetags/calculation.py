@@ -55,7 +55,7 @@ def calculate_supplier_score(report, index):
         w = float(data['w'][index - 1])
         weight = w * float(global_weight(criterion, report))
         total += weight
-    return total
+    return '%.3f' % total
 
 
 @register.simple_tag

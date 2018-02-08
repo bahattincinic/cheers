@@ -6,6 +6,11 @@ Supply selection is an extensive problem with many variables involved. Compariso
 
 **keywords:** supply chain management, decision making with many variables, AHP, python, django ....
 
+## Articles
+
+- https://en.wikipedia.org/wiki/Analytic_hierarchy_process
+- https://en.wikipedia.org/wiki/VIKOR_method
+
 ## Demo
 
 - Short Video: https://www.youtube.com/watch?v=bJ3PLNz7LLQ

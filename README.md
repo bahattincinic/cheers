@@ -11,6 +11,10 @@ Supply selection is an extensive problem with many variables involved. Compariso
 - https://en.wikipedia.org/wiki/Analytic_hierarchy_process
 - https://en.wikipedia.org/wiki/VIKOR_method
 
+## Development
+
+*This application was developed in a very short time. That's why frontend code quality so bad. I want to rewrite frontend with React. Also, it has only Turkish language support. I will implement multi-language support. If you want to contribute, please contact me.*
+
 ## Demo
 
 - Short Video: https://www.youtube.com/watch?v=bJ3PLNz7LLQ

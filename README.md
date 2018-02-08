@@ -17,6 +17,16 @@ Supply selection is an extensive problem with many variables involved. Compariso
 - Long Video: https://www.youtube.com/watch?v=MfXDSCaNHF8
 
 
+## Technologies
+
+- Python
+- Django
+- PostgreSQL
+- Highcharts
+- D3.js
+- Bootstrap
+- Heroku
+
 ### Requirements
 
 * Python 3.5+
